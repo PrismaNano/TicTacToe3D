@@ -16,7 +16,7 @@
 
 #include "Piece_bin.h"
 #include "Piece_Blue_Texture_bin.h"
-#include "Piece_Purple_Texture_bin.h"
+#include "Piece_Red_Texture_bin.h"
 
 // No sounds, no enum
 //typedef enum {
@@ -47,7 +47,7 @@ typedef enum {
 	renderer,
 	Debugger,
 	Piece_Blue,
-	Piece_Purple,
+	Piece_Red,
 	Pieces_Obj,
 	Slider_Obj,
 	Layer_1_Obj,
@@ -72,16 +72,16 @@ typedef struct {
 typedef struct {
 	DSGM_ObjectInstanceBase;
 	struct {
-		float x,y;
+		float x,y,z;
 	} *variables;
 } PieceBlueObjectInstance;
 
 typedef struct {
 	DSGM_ObjectInstanceBase;
 	struct {
-		float x,y;
+		float x,y,z;
 	} *variables;
-} PiecePurpleObjectInstance;
+} PieceRedObjectInstance;
 
 typedef struct {
 	DSGM_ObjectInstanceBase;
@@ -91,6 +91,7 @@ typedef struct {
 		int x, y;
 		int relativeRotation;
 		int distance;
+		bool touched;
 	} *variables;
 } PieceObjectInstance;
 
@@ -154,8 +155,8 @@ void Debugger_loop(DebuggerObjectInstance *me);
 void Piece_Blue_create(PieceBlueObjectInstance *me);
 void Piece_Blue_loop(PieceBlueObjectInstance *me);
 
-void Piece_Purple_create(PiecePurpleObjectInstance *me);
-void Piece_Purple_loop(PiecePurpleObjectInstance *me);
+void Piece_Red_create(PieceRedObjectInstance *me);
+void Piece_Red_loop(PieceRedObjectInstance *me);
 
 void Piece_create(PieceObjectInstance *me);
 void Piece_loop(PieceObjectInstance *me);
@@ -176,4 +177,5 @@ void Arrow_create(ArrowObjectInstance *me);
 void Arrow_loop(ArrowObjectInstance *me);
 
 void PieceTemp_create(PieceTempObjectInstance *me);
+void PieceTemp_loop(PieceTempObjectInstance *me);
 void PieceTemp_loop(PieceTempObjectInstance *me);

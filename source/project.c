@@ -40,6 +40,132 @@ typedef struct {
 
 SpriteData Sprite[128];
 
+
+bool Row_Win(){
+
+if((Board[0][0][0].color==BLUE &&
+   Board[0][1][0].color==BLUE &&
+   Board[0][2][0].color==BLUE)
+   ||
+   (Board[0][0][1].color==BLUE &&
+   Board[0][1][1].color==BLUE &&
+   Board[0][2][1].color==BLUE)
+   ||
+   (Board[0][0][2].color==BLUE &&
+   Board[0][1][2].color==BLUE &&
+   Board[0][2][2].color==BLUE)
+   ||
+
+   (Board[0][0][0].color==BLUE &&
+   Board[0][0][1].color==BLUE &&
+   Board[0][0][2].color==BLUE)
+   ||
+   (Board[0][1][0].color==BLUE &&
+   Board[0][1][1].color==BLUE &&
+   Board[0][1][2].color==BLUE)
+   ||
+   (Board[0][2][0].color==BLUE &&
+   Board[0][2][1].color==BLUE &&
+   Board[0][2][2].color==BLUE)
+
+   ||
+   (Board[0][0][0].color==BLUE &&
+   Board[0][1][1].color==BLUE &&
+   Board[0][2][2].color==BLUE)
+   ||
+   (Board[0][0][2].color==BLUE &&
+   Board[0][1][1].color==BLUE &&
+   Board[0][2][1].color==BLUE) 
+
+   //Layer 2
+   
+   ||
+   (Board[1][0][0].color==BLUE &&
+   Board[1][1][0].color==BLUE &&
+   Board[1][2][0].color==BLUE)
+   ||
+   (Board[1][0][1].color==BLUE &&
+   Board[1][1][1].color==BLUE &&
+   Board[1][2][1].color==BLUE)
+   ||
+   (Board[1][0][2].color==BLUE &&
+   Board[1][1][2].color==BLUE &&
+   Board[1][2][2].color==BLUE)
+   ||
+
+   (Board[1][0][0].color==BLUE &&
+   Board[1][0][1].color==BLUE &&
+   Board[1][0][2].color==BLUE)
+   ||
+   (Board[1][1][0].color==BLUE &&
+   Board[1][1][1].color==BLUE &&
+   Board[1][1][2].color==BLUE)
+   ||
+   (Board[1][2][0].color==BLUE &&
+   Board[1][2][1].color==BLUE &&
+   Board[1][2][2].color==BLUE)
+
+   ||
+   (Board[1][0][0].color==BLUE &&
+   Board[1][1][1].color==BLUE &&
+   Board[1][2][2].color==BLUE)
+   ||
+   (Board[1][0][2].color==BLUE &&
+   Board[1][1][1].color==BLUE &&
+   Board[1][2][1].color==BLUE)
+
+   //Layer 3
+   
+   ||
+   (Board[2][0][0].color==BLUE &&
+   Board[2][1][0].color==BLUE &&
+   Board[2][2][0].color==BLUE)
+   ||
+   (Board[2][0][1].color==BLUE &&
+   Board[2][1][1].color==BLUE &&
+   Board[2][2][1].color==BLUE)
+   ||
+   (Board[2][0][2].color==BLUE &&
+   Board[2][1][2].color==BLUE &&
+   Board[2][2][2].color==BLUE)
+   ||
+
+   (Board[2][0][0].color==BLUE &&
+   Board[2][0][1].color==BLUE &&
+   Board[2][0][2].color==BLUE)
+   ||
+   (Board[2][1][0].color==BLUE &&
+   Board[2][1][1].color==BLUE &&
+   Board[2][1][2].color==BLUE)
+   ||
+   (Board[2][2][0].color==BLUE &&
+   Board[2][2][1].color==BLUE &&
+   Board[2][2][2].color==BLUE)
+
+   ||
+   (Board[2][0][0].color==BLUE &&
+   Board[2][1][1].color==BLUE &&
+   Board[2][2][2].color==BLUE)
+   ||
+   (Board[2][0][2].color==BLUE &&
+   Board[2][1][1].color==BLUE &&
+   Board[2][2][1].color==BLUE)){
+
+   return true;
+}
+return false;
+}
+
+void reset_board(){
+
+	int i,j,k;
+
+	for(i=0;i<3;i++)for(j=0;j<3;j++)for(k=0;k<3;k++){
+		Board[i][j][k].InUse = 0;
+		Board[i][j][k].color = 0;
+	}
+}
+
 DSGM_Camera camera;
 
 DSGM_Model BoardModel;
@@ -48,7 +174,7 @@ DSGM_Texture BoardTexture = DSGM_FORM_RAM_TEXTURE(GL_RGB, TEXTURE_SIZE_128, TEXT
 DSGM_Model PieceBlueModel;
 DSGM_Model PiecePurpleModel;
 DSGM_Texture PieceBlueTexture = DSGM_FORM_RAM_TEXTURE(GL_RGB, TEXTURE_SIZE_128, TEXTURE_SIZE_128, Piece_Blue_Texture_bin);
-DSGM_Texture PiecePurpleTexture = DSGM_FORM_RAM_TEXTURE(GL_RGB, TEXTURE_SIZE_128, TEXTURE_SIZE_128, Piece_Purple_Texture_bin);
+DSGM_Texture PieceRedTexture = DSGM_FORM_RAM_TEXTURE(GL_RGB, TEXTURE_SIZE_128, TEXTURE_SIZE_128, Piece_Red_Texture_bin);
 
 // Resources
 DSGM_Sound DSGM_Sounds[DSGM_SOUND_COUNT] = {
@@ -69,7 +195,7 @@ DSGM_Palette DSGM_Palettes[DSGM_PALETTE_COUNT] = {
 };
 
 DSGM_Sprite DSGM_Sprites[DSGM_SPRITE_COUNT] = {
-	DSGM_FORM_NITRO_SPRITE(Pieces, PiecePal, SpriteSize_32x32, 2),
+	DSGM_FORM_NITRO_SPRITE(Pieces, PiecePal, SpriteSize_32x32, 3),
 	DSGM_FORM_NITRO_SPRITE(Slider, SliderPal, SpriteSize_32x16, 2),
 	DSGM_FORM_NITRO_SPRITE(Layer_Buttons, LayerPal, SpriteSize_32x64, 6),
 	DSGM_FORM_NITRO_SPRITE(Arrow, ArrowPal, SpriteSize_16x16, 3),
@@ -112,16 +238,16 @@ DSGM_Object DSGM_Objects[DSGM_OBJECT_COUNT] = {
 		sizeof(*((PieceBlueObjectInstance *)0)->variables)
 	},
 	
-	// Purple Piece
+	// Red Piece
 	{
 		DSGM_NO_SPRITE,
-		(DSGM_Event)Piece_Purple_create,
-		(DSGM_Event)Piece_Purple_loop,	
+		(DSGM_Event)Piece_Red_create,
+		(DSGM_Event)Piece_Red_loop,	
 		DSGM_NO_EVENT,
 		DSGM_NO_EVENT,
 		NULL, 0,
 		
-		sizeof(*((PiecePurpleObjectInstance *)0)->variables)
+		sizeof(*((PieceRedObjectInstance *)0)->variables)
 	},
 
 	//Pieces
@@ -377,11 +503,10 @@ void DSGM_SetupRooms(int room) {
 	
 	DSGM_SetupViews(&DSGM_Rooms[Room_1]);
 	
-	DSGM_SetupObjectGroups(&DSGM_Rooms[Room_1], DSGM_TOP, 3); //Don't forget to update number of object groups
+	DSGM_SetupObjectGroups(&DSGM_Rooms[Room_1], DSGM_TOP, 2); //Don't forget to update number of object groups
 	
 	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_TOP][0], &DSGM_Objects[renderer], DSGM_TOP, 1, 0, 0);
 	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_TOP][1], &DSGM_Objects[Debugger], DSGM_TOP, 1, 0, 0);
-	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_TOP][2], &DSGM_Objects[Piece_Blue], DSGM_TOP, 1, 0, 0);
 	
 	//DSGM_SetupObjectInstances(&DSGM_Rooms[ROOM].objectGroups[SCREEN][OBJECT_GROUP_NUMBER], &DSGM_Objects[OBJECT_NAME], DSGM_TOP, HOW_MANY, X1, Y1, X2, Y2, ...);
 	
@@ -425,7 +550,7 @@ void renderer_create(rendererObjectInstance *me) {
 	//Loading Textures
 	DSGM_LoadTexture(&BoardTexture);
 	DSGM_LoadTexture(&PieceBlueTexture);
-	DSGM_LoadTexture(&PiecePurpleTexture);
+	DSGM_LoadTexture(&PieceRedTexture);
 	
 	//gluLookAt(
     //    eye_x, eye_y, eye_z,
@@ -488,6 +613,7 @@ void renderer_loop(rendererObjectInstance *me) {
 		touch = true;
 	}
 	
+	//Store position of angle
 	if(!DSGM_held.Stylus) {
 		rotateboard = rotation;
 		touch = false;
@@ -501,19 +627,24 @@ void renderer_loop(rendererObjectInstance *me) {
 	
 	//Rotatng the board
 	DSGM_RotateBackground(DSGM_BOTTOM, degreesToAngle(rotation));
+
+	//Load 3d pieces
+	int i,j;
 	
-	//Testing loading models
-	if(DSGM_newpress.X) {
-		if(DSGM_GetObjectGroup(DSGM_TOP, &DSGM_Objects[Piece_Purple])->objectInstanceCount < 10) {
-			DSGM_CreateObjectInstance(DSGM_TOP, 0, 0, &DSGM_Objects[Piece_Purple]);
-			object++;			
+	for(i=0;i<3;i++)for(j=0;j<3;j++)if(!Board[layer][i][j].InUse){
+		switch(Board[layer][i][j].color){
+			case BLUE:
+				DSGM_CreateObjectInstance(DSGM_TOP, j, i, &DSGM_Objects[Piece_Blue]);
+				Board[layer][i][j].InUse = true;
+				break;
+			case RED:
+				DSGM_CreateObjectInstance(DSGM_TOP, j, i, &DSGM_Objects[Piece_Red]);
+				Board[layer][i][j].InUse = true;
+				break;
 		}
 	}
 	
-	//int i;
-	
-	//for(i=5;i<13;i++){
-	//	DSGM_GetObjectInstanceID(i)
+	if(Row_Win())DSGM_DrawText(DSGM_TOP, 10, 5,"YOU WIN!");
 	
 	//Render board Models
 	glBindTexture(0, BoardTexture.id);
@@ -532,10 +663,6 @@ void renderer_loop(rendererObjectInstance *me) {
 	glTranslatef(0.0f, -1.0f, 0.0f);
 	glCallList((u32 *)Board_bin);
 	glPopMatrix(1);
-	
-	// Render Piece
-	glBindTexture(0, PiecePurpleTexture.id);
-	glCallList((u32 *)Piece_bin);
 	
 	glPopMatrix(1);
 }
@@ -583,13 +710,37 @@ void Debugger_loop(DebuggerObjectInstance *me) {
 		DSGM_DrawText(DSGM_TOP, 0,  15, "rotateboard");
 		DSGM_DrawText(DSGM_TOP, 20, 15, "%d",rotateboard);
 		}else{
-		DSGM_ClearText(1);
+		//DSGM_ClearText(1);
 	}
 }
 
 void Piece_Blue_create(PieceBlueObjectInstance *me) {
-	Model[DSGM_GetObjectInstanceID(me)].X = View_X;
-	Model[DSGM_GetObjectInstanceID(me)].Y = View_Y;
+
+	switch(me->x){
+		case 0:
+			me->variables->x = 0.65;
+			break;
+		case 1:
+			me->variables->x = 0;
+			break;
+		case 2:
+			me->variables->x = -0.65;
+			break;
+	}
+	
+	me->variables->y = 1-layer;
+	
+	switch(me->y){
+		case 0:
+			me->variables->z = -0.65;
+			break;
+		case 1:
+			me->variables->z = 0;
+			break;
+		case 2:
+			me->variables->z = 0.65;
+			break;
+	}
 }
 
 void Piece_Blue_loop(PieceBlueObjectInstance *me) {
@@ -599,29 +750,66 @@ void Piece_Blue_loop(PieceBlueObjectInstance *me) {
 	glRotateY(rotation);
 	
 	// Apply transformation after rotation, and the rotation will correct the position
-	glTranslatef(0.0f, 0.0f, -0.65f);
+	glTranslatef(me->variables->x, me->variables->y, me->variables->z);
 	
 	glBindTexture(0, PieceBlueTexture.id);
 	glCallList((u32 *)Piece_bin);
 	glPopMatrix(1);
+	
+	if(DSGM_newpress.Start){
+		DSGM_DeleteObjectInstance(me);
+		DSGM_ClearText(1);
+		reset_board();
+	}
 }
 
-void Piece_Purple_create(PiecePurpleObjectInstance *me) {
-	Model[DSGM_GetObjectInstanceID(me)].Y = View_Y;
+void Piece_Red_create(PieceRedObjectInstance *me) {
+	
+	switch(me->x){
+		case 0:
+			me->variables->x = 0.65;
+			break;
+		case 1:
+			me->variables->x = 0;
+			break;
+		case 2:
+			me->variables->x = -0.65;
+			break;
+	}
+	
+	me->variables->y = 1-layer;	
+	
+	switch(me->y){
+		case 0:
+			me->variables->z = -0.65;
+			break;
+		case 1:
+			me->variables->z = 0;
+			break;
+		case 2:
+			me->variables->z = 0.65;
+			break;
+	}
 }
 
-void Piece_Purple_loop(PiecePurpleObjectInstance *me) {
+void Piece_Red_loop(PieceRedObjectInstance *me) {
 	// Draw the purple piece
 	glPushMatrix();
 	glTranslatef(View_X, View_Y, z);
 	glRotateY(rotation);
 	
 	// Apply transformation after rotation, and the rotation will correct the position
-	glTranslatef(0.0f, 0.0f, 0.0f);
+	glTranslatef(me->variables->x,me->variables->y ,me->variables->z);
 	
-	glBindTexture(0, PieceBlueTexture.id);
+	glBindTexture(0, PieceRedTexture.id);
 	glCallList((u32 *)Piece_bin);
 	glPopMatrix(1);
+	
+	if(DSGM_newpress.Start){
+		DSGM_DeleteObjectInstance(me);
+		DSGM_ClearText(1);
+		reset_board();
+	}
 }
 
 void Piece_create(PieceObjectInstance *me) {
@@ -630,51 +818,42 @@ void Piece_create(PieceObjectInstance *me) {
 	me->variables->distance = DSGM_Distance(128, 96, me->x + 16, me->y + 16);
 	me->bitshift = 12;
 	
-	switch(DSGM_GetObjectInstanceID(me)){
+	switch(me->spriteNumber){
 		case 5:
 			me->variables->bx = 0;
 			me->variables->by = 0;
-			me->variables->ID = 0;
 			break;
 		case 6:
 			me->variables->bx = 1;
 			me->variables->by = 0;
-			me->variables->ID = 1;
 			break;
 		case 7:
 			me->variables->bx = 2;
 			me->variables->by = 0;
-			me->variables->ID = 2;
 			break;
 		case 8:
 			me->variables->bx = 0;
 			me->variables->by = 1;
-			me->variables->ID = 3;
 			break;
 		case 9:
 			me->variables->bx = 1;
 			me->variables->by = 1;
-			me->variables->ID = 4;
 			break;
 		case 10:
 			me->variables->bx = 2;
 			me->variables->by = 1;
-			me->variables->ID = 5;
 			break;
 		case 11:
 			me->variables->bx = 0;
 			me->variables->by = 2;
-			me->variables->ID = 6;
 			break;
 		case 12:
 			me->variables->bx = 1;
 			me->variables->by = 2;
-			me->variables->ID = 7;
 			break;
 		case 13:
 			me->variables->bx = 2;
 			me->variables->by = 2;
-			me->variables->ID = 8;
 			break;
 	}
 }
@@ -690,38 +869,17 @@ void Piece_loop(PieceObjectInstance *me) {
 	me->x = 128 - 16 - ((cosLerp(degreesToAngle(r)) * me->variables->distance) >> me->bitshift);
 	me->y = 96 - 16 + ((sinLerp(degreesToAngle(r)) * me->variables->distance) >> me->bitshift);
 	
-	if(DSGM_release.Stylus){
-		if(DSGM_stylus.x>me->x && DSGM_stylus.x<me->x+32 && DSGM_stylus.y>me->y && DSGM_stylus.y<me->y+32){
-			//Board[layer][me->variables->bx][me->variables->by].color = BLUE;
-			switch(me->variables->ID){
-				case 0:
-					Board[layer][0][0].color = BLUE;
-					break;
-				case 1:
-					Board[layer][1][0].color = BLUE;
-					break;
-				case 2:
-					Board[layer][2][0].color = BLUE;
-					break;
-				case 3:
-					Board[layer][0][1].color = BLUE;
-					break;
-				case 4:
-					Board[layer][1][1].color = BLUE;
-					break;
-				case 5:
-					Board[layer][2][1].color = BLUE;
-					break;
-				case 6:
-					Board[layer][0][2].color = BLUE;
-					break;
-				case 7:
-					Board[layer][1][2].color = BLUE;
-					break;
-				case 8:
-					Board[layer][2][2].color = BLUE;
-					break;
+	//Set piece on board
+	if(DSGM_stylus.x>me->x && DSGM_stylus.x<me->x+32 && DSGM_stylus.y>me->y && DSGM_stylus.y<me->y+32){
+		if(DSGM_newpress.Stylus){
+			me->variables->touched = true;
+		}
+		if(DSGM_release.Stylus){
+			if(me->variables->touched == true && !Board[layer][me->variables->bx][me->variables->by].InUse){
+				if(DSGM_held.L)Board[layer][me->variables->bx][me->variables->by].color = RED;
+				if(!DSGM_held.L)Board[layer][me->variables->bx][me->variables->by].color = BLUE;
 			}
+			me->variables->touched = false;
 		}
 	}
 }
