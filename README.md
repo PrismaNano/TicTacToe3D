@@ -5,7 +5,7 @@
 
 > ## TODO:
 > 
-> 1.   Make a function to determine who wins in the game...need to find every possible 3-in-a-row: bool Row_Win()
+> 1.   Make a function to determine who wins in the game...need to find every possible 3-in-a-row: https://github.com/PrismaNano/TicTacToe3D/blob/master/source/project.c#L42
 > 2.   Correct the zoom slide button...or replace it with buttons instead
 > 3.   Fix panoramic scroll background
 >
