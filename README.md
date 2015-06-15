@@ -1,7 +1,7 @@
 # TicTacToe3D
 
 Introducing the classic Tic Tac Toe 3D board game for DS! 
-![alt tag](http://www.mediafire.com/view/3k8gnhksslfrg18/Capture.PNG)
+![](http://www.mediafire.com/view/3k8gnhksslfrg18/Capture.PNG#)
 
 To do:
 -Correct the zoom slide button
