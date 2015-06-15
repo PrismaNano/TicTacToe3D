@@ -7,20 +7,18 @@
 
 // User variables / declarations
 int angle_1, angle_2;
-int rotation, rotateboard;
+int rotation, rotateboard, RotVelocity;
 bool touch;
 float x, y, z, a, b;
 int frames;
 int layer;
 float View_Y, View_X;
-int object;
 bool Debug;
 bool zoom;
 
 typedef struct{
 	bool InUse;
 	int color;
-	int ID;
 }BoardData;
 
 BoardData Board[3][3][3];
@@ -73,9 +71,9 @@ if((Board[0][0][0].color==BLUE &&
    Board[0][1][1].color==BLUE &&
    Board[0][2][2].color==BLUE)
    ||
-   (Board[0][0][2].color==BLUE &&
+   (Board[0][2][0].color==BLUE &&
    Board[0][1][1].color==BLUE &&
-   Board[0][2][1].color==BLUE) 
+   Board[0][0][2].color==BLUE) 
 
    //Layer 2
    
@@ -110,9 +108,9 @@ if((Board[0][0][0].color==BLUE &&
    Board[1][1][1].color==BLUE &&
    Board[1][2][2].color==BLUE)
    ||
-   (Board[1][0][2].color==BLUE &&
+   (Board[1][2][0].color==BLUE &&
    Board[1][1][1].color==BLUE &&
-   Board[1][2][1].color==BLUE)
+   Board[1][0][2].color==BLUE)
 
    //Layer 3
    
@@ -147,14 +145,19 @@ if((Board[0][0][0].color==BLUE &&
    Board[2][1][1].color==BLUE &&
    Board[2][2][2].color==BLUE)
    ||
-   (Board[2][0][2].color==BLUE &&
+   (Board[2][2][0].color==BLUE &&
    Board[2][1][1].color==BLUE &&
-   Board[2][2][1].color==BLUE)){
+   Board[2][0][2].color==BLUE)){
 
    return true;
 }
 return false;
 }
+
+int DegreesToRadians(int degrees)
+{
+return degrees * M_PI / 180;
+};
 
 void reset_board(){
 
@@ -176,6 +179,9 @@ DSGM_Model PiecePurpleModel;
 DSGM_Texture PieceBlueTexture = DSGM_FORM_RAM_TEXTURE(GL_RGB, TEXTURE_SIZE_128, TEXTURE_SIZE_128, Piece_Blue_Texture_bin);
 DSGM_Texture PieceRedTexture = DSGM_FORM_RAM_TEXTURE(GL_RGB, TEXTURE_SIZE_128, TEXTURE_SIZE_128, Piece_Red_Texture_bin);
 
+DSGM_Model TableTopModel;
+DSGM_Texture TableTopTexture = DSGM_FORM_RAM_TEXTURE(GL_RGB, TEXTURE_SIZE_128, TEXTURE_SIZE_128, TableTop_Texture_bin);
+
 // Resources
 DSGM_Sound DSGM_Sounds[DSGM_SOUND_COUNT] = {
 };
@@ -185,6 +191,7 @@ DSGM_Background DSGM_Backgrounds[DSGM_BACKGROUND_COUNT] = {
 	DSGM_FORM_NITRO_BACKGROUND(BGCoffeeBottom, BgSize_T_256x256, BgType_Text8bpp),
 	DSGM_FORM_NITRO_BACKGROUND(RotBoard, BgSize_ER_256x256, BgType_ExRotation),
 	DSGM_FORM_NITRO_BACKGROUND(BGCoffee1, BgSize_T_256x256, BgType_Text8bpp),
+	DSGM_FORM_NITRO_BACKGROUND(BG1, BgSize_T_512x512, BgType_Text8bpp),
 };
 
 DSGM_Palette DSGM_Palettes[DSGM_PALETTE_COUNT] = {
@@ -418,20 +425,20 @@ DSGM_Room DSGM_Rooms[DSGM_ROOM_COUNT] = {
 					DSGM_DEFAULT_FONT,			// Background
 					DSGM_TOP,					// Screen
 					1,							// Layer
-					true,						// Attached to view system
-					2,							// Map base
-					0,							// Tile base
+					false,						// Attached to view system
+					0,							// Map base
+					1,							// Tile base
 					0, 0, 0
 				},
 				
 				// Layer 2
 				{
-					&DSGM_Backgrounds[BGCoffeeTop],// Background
+					&DSGM_Backgrounds[Backdrop],// Background
 					DSGM_TOP,					// Screen
 					2,							// Layer
 					true,						// Attached to view system
-					3,							// Map base
-					1,							// Tile base
+					1,							// Map base
+					2,							// Tile base
 					0, 0, 0
 				},
 				
@@ -551,6 +558,7 @@ void renderer_create(rendererObjectInstance *me) {
 	DSGM_LoadTexture(&BoardTexture);
 	DSGM_LoadTexture(&PieceBlueTexture);
 	DSGM_LoadTexture(&PieceRedTexture);
+	DSGM_LoadTexture(&TableTopTexture);
 	
 	//gluLookAt(
     //    eye_x, eye_y, eye_z,
@@ -645,6 +653,11 @@ void renderer_loop(rendererObjectInstance *me) {
 	}
 	
 	if(Row_Win())DSGM_DrawText(DSGM_TOP, 10, 5,"YOU WIN!");
+
+	
+	//Scroll panoramic backgroud
+	DSGM_view[DSGM_TOP].x = rotation;
+	
 	
 	//Render board Models
 	glBindTexture(0, BoardTexture.id);
@@ -662,6 +675,12 @@ void renderer_loop(rendererObjectInstance *me) {
 	glPushMatrix();
 	glTranslatef(0.0f, -1.0f, 0.0f);
 	glCallList((u32 *)Board_bin);
+	glPopMatrix(1);
+	
+	glBindTexture(0, TableTopTexture.id);
+	glPushMatrix();
+	glTranslatef(0.0f, -1.2f, 0.0f);
+	glCallList((u32 *)TableTop_bin);
 	glPopMatrix(1);
 	
 	glPopMatrix(1);
@@ -709,6 +728,12 @@ void Debugger_loop(DebuggerObjectInstance *me) {
 		DSGM_DrawText(DSGM_TOP, 20, 14, "%d",angle_2);
 		DSGM_DrawText(DSGM_TOP, 0,  15, "rotateboard");
 		DSGM_DrawText(DSGM_TOP, 20, 15, "%d",rotateboard);
+		DSGM_DrawText(DSGM_TOP, 0,  16, "rotvelcotiy");
+		DSGM_DrawText(DSGM_TOP, 20, 16, "%d",RotVelocity);
+		DSGM_DrawText(DSGM_TOP, 0,  17, "D to A Rotation");
+		DSGM_DrawText(DSGM_TOP, 20, 17, "%d",DegreesToRadians(rotation));
+		DSGM_DrawText(DSGM_TOP, 0,  18, "DSGM_view[DSGM_TOP].x");
+		DSGM_DrawText(DSGM_TOP, 20, 18, "%d",DSGM_view[DSGM_TOP].x);
 		}else{
 		//DSGM_ClearText(1);
 	}
