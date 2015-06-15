@@ -3,7 +3,7 @@
 #define DSGM_SOUND_STREAM_COUNT 0
 #define DSGM_SOUND_EFFECT_COUNT 0
 #define DSGM_SOUND_COUNT (DSGM_SOUND_STREAM_COUNT + DSGM_SOUND_EFFECT_COUNT)
-#define DSGM_BACKGROUND_COUNT 4
+#define DSGM_BACKGROUND_COUNT 5
 #define DSGM_PALETTE_COUNT 4
 #define DSGM_SPRITE_COUNT 4
 #define DSGM_OBJECT_COUNT 12
@@ -18,6 +18,9 @@
 #include "Piece_Blue_Texture_bin.h"
 #include "Piece_Red_Texture_bin.h"
 
+#include "TableTop_bin.h"
+#include "TableTop_Texture_bin.h"
+
 // No sounds, no enum
 //typedef enum {
 //} DSGM_SoundNames;
@@ -27,6 +30,7 @@ typedef enum {
 	BGCoffeeBottom,
 	RotBoard,
 	BGCoffee1,
+	Backdrop,
 } DSGM_BackgroundNames;
 
 typedef enum {
