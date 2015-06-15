@@ -6,6 +6,6 @@
 > ## TODO:
 > 
 > 1.   Make a function to determine who wins in the game
-> 2.   Correct the zoom slide button
+> 2.   Correct the zoom slide button...or replace it with buttons instead
 > 3.   Fix panoramic scroll background
 >
