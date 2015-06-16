@@ -16,10 +16,10 @@ float View_Y, View_X;
 bool Debug;
 bool zoom;
 
-typedef struct{
+typedef struct {
 	bool InUse;
 	int color;
-}BoardData;
+} BoardData;
 
 BoardData Board[3][3][3];
 
@@ -31,142 +31,61 @@ typedef struct {
 
 ModelData Model[10];
 
-typedef struct {
-	int angle;
-	int x, y;
-} SpriteData;
-
-SpriteData Sprite[128];
-
-
-bool Row_Win(){
-
-if((Board[0][0][0].color==BLUE &&
-   Board[0][1][0].color==BLUE &&
-   Board[0][2][0].color==BLUE)
-   ||
-   (Board[0][0][1].color==BLUE &&
-   Board[0][1][1].color==BLUE &&
-   Board[0][2][1].color==BLUE)
-   ||
-   (Board[0][0][2].color==BLUE &&
-   Board[0][1][2].color==BLUE &&
-   Board[0][2][2].color==BLUE)
-   ||
-
-   (Board[0][0][0].color==BLUE &&
-   Board[0][0][1].color==BLUE &&
-   Board[0][0][2].color==BLUE)
-   ||
-   (Board[0][1][0].color==BLUE &&
-   Board[0][1][1].color==BLUE &&
-   Board[0][1][2].color==BLUE)
-   ||
-   (Board[0][2][0].color==BLUE &&
-   Board[0][2][1].color==BLUE &&
-   Board[0][2][2].color==BLUE)
-
-   ||
-   (Board[0][0][0].color==BLUE &&
-   Board[0][1][1].color==BLUE &&
-   Board[0][2][2].color==BLUE)
-   ||
-   (Board[0][2][0].color==BLUE &&
-   Board[0][1][1].color==BLUE &&
-   Board[0][0][2].color==BLUE) 
-
-   //Layer 2
-   
-   ||
-   (Board[1][0][0].color==BLUE &&
-   Board[1][1][0].color==BLUE &&
-   Board[1][2][0].color==BLUE)
-   ||
-   (Board[1][0][1].color==BLUE &&
-   Board[1][1][1].color==BLUE &&
-   Board[1][2][1].color==BLUE)
-   ||
-   (Board[1][0][2].color==BLUE &&
-   Board[1][1][2].color==BLUE &&
-   Board[1][2][2].color==BLUE)
-   ||
-
-   (Board[1][0][0].color==BLUE &&
-   Board[1][0][1].color==BLUE &&
-   Board[1][0][2].color==BLUE)
-   ||
-   (Board[1][1][0].color==BLUE &&
-   Board[1][1][1].color==BLUE &&
-   Board[1][1][2].color==BLUE)
-   ||
-   (Board[1][2][0].color==BLUE &&
-   Board[1][2][1].color==BLUE &&
-   Board[1][2][2].color==BLUE)
-
-   ||
-   (Board[1][0][0].color==BLUE &&
-   Board[1][1][1].color==BLUE &&
-   Board[1][2][2].color==BLUE)
-   ||
-   (Board[1][2][0].color==BLUE &&
-   Board[1][1][1].color==BLUE &&
-   Board[1][0][2].color==BLUE)
-
-   //Layer 3
-   
-   ||
-   (Board[2][0][0].color==BLUE &&
-   Board[2][1][0].color==BLUE &&
-   Board[2][2][0].color==BLUE)
-   ||
-   (Board[2][0][1].color==BLUE &&
-   Board[2][1][1].color==BLUE &&
-   Board[2][2][1].color==BLUE)
-   ||
-   (Board[2][0][2].color==BLUE &&
-   Board[2][1][2].color==BLUE &&
-   Board[2][2][2].color==BLUE)
-   ||
-
-   (Board[2][0][0].color==BLUE &&
-   Board[2][0][1].color==BLUE &&
-   Board[2][0][2].color==BLUE)
-   ||
-   (Board[2][1][0].color==BLUE &&
-   Board[2][1][1].color==BLUE &&
-   Board[2][1][2].color==BLUE)
-   ||
-   (Board[2][2][0].color==BLUE &&
-   Board[2][2][1].color==BLUE &&
-   Board[2][2][2].color==BLUE)
-
-   ||
-   (Board[2][0][0].color==BLUE &&
-   Board[2][1][1].color==BLUE &&
-   Board[2][2][2].color==BLUE)
-   ||
-   (Board[2][2][0].color==BLUE &&
-   Board[2][1][1].color==BLUE &&
-   Board[2][0][2].color==BLUE)){
-
-   return true;
-}
-return false;
+bool Row_Win(void) {
+	int layer = 0;
+	for(layer = 0; layer < 3; layer++) {
+		if(
+			(Board[layer][0][0].color == BLUE &&
+			Board[layer][1][0].color == BLUE &&
+			Board[layer][2][0].color == BLUE) ||
+			
+			(Board[layer][0][1].color == BLUE &&
+			Board[layer][1][1].color == BLUE &&
+			Board[layer][2][1].color == BLUE) ||
+			
+			(Board[layer][0][2].color == BLUE &&
+			Board[layer][1][2].color == BLUE &&
+			Board[layer][2][2].color ==BLUE) ||
+			
+			(Board[layer][0][0].color == BLUE &&
+			Board[layer][0][1].color == BLUE &&
+			Board[layer][0][2].color == BLUE) ||
+			
+			(Board[layer][1][0].color == BLUE &&
+			Board[layer][1][1].color == BLUE &&
+			Board[layer][1][2].color == BLUE) ||
+			
+			(Board[layer][2][0].color == BLUE &&
+			Board[layer][2][1].color == BLUE &&
+			Board[layer][2][2].color == BLUE) ||
+			
+			(Board[layer][0][0].color == BLUE &&
+			Board[layer][1][1].color == BLUE &&
+			Board[layer][2][2].color == BLUE) ||
+			
+			(Board[layer][2][0].color == BLUE &&
+			Board[layer][1][1].color == BLUE &&
+			Board[layer][0][2].color == BLUE)
+		) return true;
+	}
+	
+	return false;
 }
 
-int DegreesToRadians(int degrees)
-{
-return degrees * M_PI / 180;
-};
+int DegreesToRadians(int degrees) {
+	return degrees * M_PI / 180;
+}
 
-void reset_board(){
-
-	int i,j,k;
-
-	for(i=0;i<3;i++)for(j=0;j<3;j++)for(k=0;k<3;k++){
+void reset_board(void) {
+	/*
+	int i, j, k;
+	for(i = 0; i < 3; i++) for(j = 0; j < 3; j++) for(k = 0; k < 3; k++) {
 		Board[i][j][k].InUse = 0;
 		Board[i][j][k].color = 0;
 	}
+	*/
+	
+	memset(Board, 0, sizeof(Board));
 }
 
 DSGM_Camera camera;
