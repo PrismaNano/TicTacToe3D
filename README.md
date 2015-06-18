@@ -1,11 +1,10 @@
 # TicTacToe3D
 
 ###Introducing the classic Tic Tac Toe 3D board game for DS!######
-![](https://github.com/PrismaNano/TicTacToe3D/blob/master/Capture.PNG)
+![](https://cloud.githubusercontent.com/assets/12837982/8222251/872bc172-1536-11e5-98a4-35ed755c9d39.png)
 
-> ## TODO:
-> 
-> 1.   Make a function to determine who wins in the game...need to find every possible 3-in-a-row: https://github.com/PrismaNano/TicTacToe3D/blob/master/source/project.c#L42
-> 2.   Correct the zoom slide button...or replace it with buttons instead
-> 3.   Fix panoramic scroll background
->
+Building the project
+--------------------
+*  Install the dsgmlib library: https://github.com/CTurt/dsgmLib
+*  Download the project to your computer
+*  Run the build.bat in the TicTacToe3D project folder
