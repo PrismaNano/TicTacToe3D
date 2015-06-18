@@ -7,4 +7,4 @@ Building the project
 --------------------
 *  Install the dsgmlib library: https://github.com/CTurt/dsgmLib
 *  Download the project to your computer
-*  Run the build.bat in the TicTacToe3D project folder
+*  Run the build.bat in the TicTacToe3D-master folder
