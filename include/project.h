@@ -95,7 +95,6 @@ typedef struct {
 		int x, y;
 		int relativeRotation;
 		int distance;
-		bool touched;
 	} *variables;
 } PieceObjectInstance;
 
