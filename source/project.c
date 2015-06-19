@@ -15,6 +15,7 @@ int layer;
 float View_Y, View_X;
 bool Debug;
 bool zoom;
+bool PieceTouched;
 
 typedef struct {
 	bool InUse;
@@ -462,7 +463,7 @@ void DSGM_SetupRooms(int room) {
 	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_BOTTOM][12], &DSGM_Objects[Pieces_Obj], DSGM_BOTTOM, 1, 112, 112);
 	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_BOTTOM][13], &DSGM_Objects[Pieces_Obj], DSGM_BOTTOM, 1, 80, 113);
 	
-	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_BOTTOM][14], &DSGM_Objects[Arrow_Obj], DSGM_BOTTOM, 1, 200, 160);
+	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_BOTTOM][14], &DSGM_Objects[Arrow_Obj], DSGM_BOTTOM, 1, 236, 168);
 	
 
 	
@@ -534,26 +535,28 @@ void renderer_loop(rendererObjectInstance *me) {
 	x = DSGM_stylus.x;
 	y = DSGM_stylus.y;
 	
-	// Only rotate board if you touch in a certain area
-	if(DSGM_newpress.Stylus && DSGM_stylus.x > 32 && DSGM_stylus.x < 256 - 32) {
-		angle_1 = angleToDegrees(DSGM_GetAngle(128, 96, x, y));
-		touch = true;
-	}
+	if(!PieceTouched){
+		// Only rotate board if you touch in a certain area
+		if(DSGM_newpress.Stylus && DSGM_stylus.x > 32 && DSGM_stylus.x < 256 - 32) {
+			angle_1 = angleToDegrees(DSGM_GetAngle(128, 96, x, y));
+			touch = true;
+		}
 	
-	//Store position of angle
-	if(!DSGM_held.Stylus) {
-		rotateboard = rotation;
-		touch = false;
-	}
+		//Store position of angle
+		if(!DSGM_held.Stylus) {
+			rotateboard = rotation;
+			touch = false;
+		}
 	
-	//Adjusting the angle of the board
-	if(touch) {
-		angle_2 = angle_1 - angleToDegrees(DSGM_GetAngle(128, 96, x, y));
-		rotation = rotateboard - angle_2;
-	}
+		//Adjusting the angle of the board
+			if(touch) {
+			angle_2 = angle_1 - angleToDegrees(DSGM_GetAngle(128, 96, x, y));
+			rotation = rotateboard - angle_2;
+		}
 	
-	//Rotatng the board
-	DSGM_RotateBackground(DSGM_BOTTOM, degreesToAngle(rotation));
+		//Rotatng the board
+		DSGM_RotateBackground(DSGM_BOTTOM, degreesToAngle(rotation));
+	}
 
 	//Load 3d pieces
 	int i,j;
@@ -575,7 +578,7 @@ void renderer_loop(rendererObjectInstance *me) {
 
 	
 	//Scroll panoramic backgroud
-	DSGM_view[DSGM_TOP].x = rotation;
+	DSGM_view[DSGM_TOP].x = rotation*3;
 	
 	
 	//Render board Models
@@ -814,16 +817,15 @@ void Piece_loop(PieceObjectInstance *me) {
 	me->y = 96 - 16 + ((sinLerp(degreesToAngle(r)) * me->variables->distance) >> me->bitshift);
 	
 	//Set piece on board
-	if(DSGM_stylus.x>me->x && DSGM_stylus.x<me->x+32 && DSGM_stylus.y>me->y && DSGM_stylus.y<me->y+32){
-		if(DSGM_newpress.Stylus){
-			me->variables->touched = true;
-		}
-		if(DSGM_release.Stylus){
-			if(me->variables->touched == true && !Board[layer][me->variables->bx][me->variables->by].InUse){
-				if(DSGM_held.L)Board[layer][me->variables->bx][me->variables->by].color = RED;
-				if(!DSGM_held.L)Board[layer][me->variables->bx][me->variables->by].color = BLUE;
+	if(DSGM_release.Stylus){
+		if(PieceTouched){
+			if(DSGM_stylus.x>me->x && DSGM_stylus.x<me->x+32 && DSGM_stylus.y>me->y && DSGM_stylus.y<me->y+32){
+				if(!Board[layer][me->variables->bx][me->variables->by].InUse){
+					if(DSGM_held.L)Board[layer][me->variables->bx][me->variables->by].color = RED;
+					if(!DSGM_held.L)Board[layer][me->variables->bx][me->variables->by].color = BLUE;
+					PieceTouched = false;
+				}
 			}
-			me->variables->touched = false;
 		}
 	}
 }
@@ -923,6 +925,18 @@ void PieceTemp_create(PieceTempObjectInstance *me){
 }
 
 void PieceTemp_loop(PieceTempObjectInstance *me){
-	me->x = DSGM_stylus.x-16;
-	me->y = DSGM_stylus.y-16;
+	me->frame = 1;
+
+	if(DSGM_newpress.Stylus && DSGM_stylus.x>me->x+5 && DSGM_stylus.x<me->x+32-6&&DSGM_stylus.y>me->y+6&&DSGM_stylus.y<me->y+32-6){
+		PieceTouched = true;
+	}
+	if(DSGM_held.Stylus && PieceTouched){
+		me->x = DSGM_stylus.x-16;
+		me->y = DSGM_stylus.y-16;
+	}
+	else{
+		me->x = 200;
+		me->y = 160;
+		//PieceTouched = false;
+	}
 }
