@@ -46,8 +46,8 @@ bool Row_Win(void) {
 			
 			(Board[layer][0][2].color == BLUE &&
 			Board[layer][1][2].color == BLUE &&
-			Board[layer][2][2].color ==BLUE) ||
-			
+			Board[layer][2][2].color == BLUE) ||
+			/*----------------------------------*/
 			(Board[layer][0][0].color == BLUE &&
 			Board[layer][0][1].color == BLUE &&
 			Board[layer][0][2].color == BLUE) ||
@@ -59,14 +59,114 @@ bool Row_Win(void) {
 			(Board[layer][2][0].color == BLUE &&
 			Board[layer][2][1].color == BLUE &&
 			Board[layer][2][2].color == BLUE) ||
-			
+			/*----------------------------------*/
 			(Board[layer][0][0].color == BLUE &&
 			Board[layer][1][1].color == BLUE &&
 			Board[layer][2][2].color == BLUE) ||
 			
 			(Board[layer][2][0].color == BLUE &&
 			Board[layer][1][1].color == BLUE &&
-			Board[layer][0][2].color == BLUE)
+			Board[layer][0][2].color == BLUE) ||
+			/*----------------------------------*/
+			(Board[0][0][0].color == BLUE &&
+			Board[1][0][0].color == BLUE &&
+			Board[2][0][0].color == BLUE) ||
+			
+			(Board[0][1][0].color == BLUE &&
+			Board[1][1][0].color == BLUE &&
+			Board[2][1][0].color == BLUE) ||
+			
+			(Board[0][2][0].color == BLUE &&
+			Board[1][2][0].color == BLUE &&
+			Board[2][2][0].color == BLUE) ||
+			
+			(Board[0][0][1].color == BLUE &&
+			Board[1][0][1].color == BLUE &&
+			Board[2][0][1].color == BLUE) ||
+			
+			(Board[0][1][1].color == BLUE &&
+			Board[1][1][1].color == BLUE &&
+			Board[2][1][1].color == BLUE) ||
+			
+			(Board[0][2][1].color == BLUE &&
+			Board[1][2][1].color == BLUE &&
+			Board[2][2][1].color == BLUE) ||
+			
+			(Board[0][0][2].color == BLUE &&
+			Board[1][0][2].color == BLUE &&
+			Board[2][0][2].color == BLUE) ||
+			
+			(Board[0][1][2].color == BLUE &&
+			Board[1][1][2].color == BLUE &&
+			Board[2][1][2].color == BLUE) ||
+			
+			(Board[0][2][2].color == BLUE &&
+			Board[1][2][2].color == BLUE &&
+			Board[2][2][2].color == BLUE) ||
+			/*----------------------------------*/
+			(Board[0][0][0].color == BLUE &&
+			Board[1][1][0].color == BLUE &&
+			Board[2][2][0].color == BLUE) ||
+			
+			(Board[0][0][1].color == BLUE &&
+			Board[1][1][1].color == BLUE &&
+			Board[2][2][1].color == BLUE) ||
+			
+			(Board[0][0][2].color == BLUE &&
+			Board[1][1][2].color == BLUE &&
+			Board[2][2][2].color == BLUE) ||
+			
+			(Board[0][2][0].color == BLUE &&
+			Board[1][1][0].color == BLUE &&
+			Board[2][0][0].color == BLUE) ||
+			
+			(Board[0][2][1].color == BLUE &&
+			Board[1][1][1].color == BLUE &&
+			Board[2][0][1].color == BLUE) ||
+			
+			(Board[0][2][2].color == BLUE &&
+			Board[1][1][2].color == BLUE &&
+			Board[2][0][2].color == BLUE) ||
+			
+			(Board[0][0][0].color == BLUE &&
+			Board[1][0][1].color == BLUE &&
+			Board[2][0][2].color == BLUE) ||
+			
+			(Board[0][1][0].color == BLUE &&
+			Board[1][1][1].color == BLUE &&
+			Board[2][1][2].color == BLUE) ||
+			
+			(Board[0][2][0].color == BLUE &&
+			Board[1][2][1].color == BLUE &&
+			Board[2][2][2].color == BLUE) ||
+			
+			(Board[0][0][2].color == BLUE &&
+			Board[1][0][1].color == BLUE &&
+			Board[2][0][0].color == BLUE) ||
+			
+			(Board[0][1][2].color == BLUE &&
+			Board[1][1][1].color == BLUE &&
+			Board[2][1][0].color == BLUE) ||
+			
+			(Board[0][2][2].color == BLUE &&
+			Board[1][2][1].color == BLUE &&
+			Board[2][2][0].color == BLUE) ||
+			/*----------------------------------*/
+			(Board[0][0][0].color == BLUE &&
+			Board[1][1][1].color == BLUE &&
+			Board[2][2][2].color == BLUE) ||
+			
+			(Board[0][2][2].color == BLUE &&
+			Board[1][1][1].color == BLUE &&
+			Board[2][0][0].color == BLUE) ||
+			
+			(Board[0][0][2].color == BLUE &&
+			Board[1][1][1].color == BLUE &&
+			Board[2][2][0].color == BLUE) ||
+			
+			(Board[0][2][2].color == BLUE &&
+			Board[1][1][1].color == BLUE &&
+			Board[2][0][0].color == BLUE)
 		) return true;
 	}
 	
