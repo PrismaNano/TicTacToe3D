@@ -169,7 +169,6 @@ bool Row_Win(void) {
 			Board[2][2][0].color == BLUE)
 		) return true;
 	}
-	
 	return false;
 }
 
