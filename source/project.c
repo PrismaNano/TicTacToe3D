@@ -224,7 +224,7 @@ DSGM_Sprite DSGM_Sprites[DSGM_SPRITE_COUNT] = {
 	DSGM_FORM_NITRO_SPRITE(Pieces, PiecePal, SpriteSize_32x32, 3),
 	DSGM_FORM_NITRO_SPRITE(Slider, SliderPal, SpriteSize_32x16, 2),
 	DSGM_FORM_NITRO_SPRITE(Layer_Buttons, LayerPal, SpriteSize_32x64, 6),
-	DSGM_FORM_NITRO_SPRITE(Arrow, ArrowPal, SpriteSize_16x16, 3),
+	DSGM_FORM_NITRO_SPRITE(Arrow, ArrowPal, SpriteSize_16x16, 4),
 };
 
 DSGM_Object DSGM_Objects[DSGM_OBJECT_COUNT] = {
@@ -562,7 +562,7 @@ void DSGM_SetupRooms(int room) {
 	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_BOTTOM][12], &DSGM_Objects[Pieces_Obj], DSGM_BOTTOM, 1, 112, 112);
 	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_BOTTOM][13], &DSGM_Objects[Pieces_Obj], DSGM_BOTTOM, 1, 80, 113);
 	
-	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_BOTTOM][14], &DSGM_Objects[Arrow_Obj], DSGM_BOTTOM, 1, 236, 168);
+	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_BOTTOM][14], &DSGM_Objects[Arrow_Obj], DSGM_BOTTOM, 1, 238, 168);
 	
 
 	
@@ -1013,11 +1013,16 @@ void Layer_3_loop(Layer3ObjectInstance *me) {
 }
 
 void Arrow_create(ArrowObjectInstance *me) {
-	me->frame = 1;
+
 }
 
 void Arrow_loop(ArrowObjectInstance *me) {
-	
+	if(PieceTouched){
+		me->frame = 0;
+	}
+	else{
+		DSGM_AnimateObjectInstance(me, 1, 3, 10);
+	}
 }
 
 void PieceTemp_create(PieceTempObjectInstance *me){
@@ -1034,7 +1039,7 @@ void PieceTemp_loop(PieceTempObjectInstance *me){
 		me->y = DSGM_stylus.y-16;
 	}
 	else{
-		me->x = 200;
+		me->x = 208;
 		me->y = 160;
 		//PieceTouched = false;
 	}
