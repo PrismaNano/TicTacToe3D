@@ -291,7 +291,7 @@ DSGM_Object DSGM_Objects[DSGM_OBJECT_COUNT] = {
 	//Slider
 	{
 		&DSGM_Sprites[Slider_Spr],
-		(DSGM_Event)Slider_create,
+		DSGM_NO_EVENT,
 		(DSGM_Event)Slider_loop,	
 		DSGM_NO_EVENT,
 		DSGM_NO_EVENT,
@@ -929,10 +929,6 @@ void Piece_loop(PieceObjectInstance *me) {
 	}
 }
 
-void Slider_create(SliderObjectInstance *me) {
-
-}
-
 void Slider_loop(SliderObjectInstance *me) {
 	if(DSGM_held.Up || DSGM_held.Down) {
 		if(!me->variables->touched) {
@@ -958,7 +954,7 @@ void Slider_loop(SliderObjectInstance *me) {
 	if(me->variables->touched) {
 		me->y = DSGM_stylus.y - 10;
 		me->frame = 1;
-		View_X = (DSGM_stylus.y - 20)/20;
+		View_X = (DSGM_stylus.y - 20) / 20.0f;
 	}
 	
 	if(!DSGM_held.Stylus) {

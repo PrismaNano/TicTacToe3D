@@ -164,7 +164,6 @@ void Piece_Red_loop(PieceRedObjectInstance *me);
 void Piece_create(PieceObjectInstance *me);
 void Piece_loop(PieceObjectInstance *me);
 
-void Slider_create(SliderObjectInstance *me);
 void Slider_loop(SliderObjectInstance *me);
 
 void Layer_1_create(Layer1ObjectInstance *me);
