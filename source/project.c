@@ -637,7 +637,7 @@ void renderer_loop(rendererObjectInstance *me) {
 	if(!PieceTouched){
 		// Only rotate board if you touch in a certain area
 		if(DSGM_newpress.Stylus && DSGM_stylus.x > 32 && DSGM_stylus.x < 256 - 32) {
-			angle_1 = angleToDegrees(DSGM_GetAngle(128, 96, x, y));
+			angle_1 = DSGM_GetAngle(128, 96, x, y);
 			touch = true;
 		}
 	
@@ -648,13 +648,13 @@ void renderer_loop(rendererObjectInstance *me) {
 		}
 	
 		//Adjusting the angle of the board
-			if(touch) {
-			angle_2 = angle_1 - angleToDegrees(DSGM_GetAngle(128, 96, x, y));
+		if(touch) {
+			angle_2 = angle_1 - DSGM_GetAngle(128, 96, x, y);
 			rotation = rotateboard - angle_2;
 		}
 	
 		//Rotatng the board
-		DSGM_RotateBackground(DSGM_BOTTOM, degreesToAngle(rotation));
+		DSGM_RotateBackground(DSGM_BOTTOM, rotation);
 	}
 
 	//Load 3d pieces
@@ -673,18 +673,18 @@ void renderer_loop(rendererObjectInstance *me) {
 		}
 	}
 	
-	if(Row_Win())DSGM_DrawText(DSGM_TOP, 10, 5,"YOU WIN!");
+	if(Row_Win()) DSGM_DrawText(DSGM_TOP, 10, 5, "YOU WIN!");
 
 	
 	//Scroll panoramic backgroud
-	DSGM_view[DSGM_TOP].x = rotation*3;
+	DSGM_view[DSGM_TOP].x = (rotation / 32) % 512;
 	
 	
 	//Render board Models
 	glBindTexture(0, BoardTexture.id);
 	
 	glTranslatef(View_X, View_Y, z);
-	glRotateY(rotation);
+	glRotateYi(rotation);
 	
 	glPushMatrix();
 	glTranslatef(0.0f, 1.0f, 0.0f);
@@ -793,7 +793,7 @@ void Piece_Blue_loop(PieceBlueObjectInstance *me) {
 	// Draw the blue piece
 	glPushMatrix();
 	glTranslatef(View_X, View_Y, z);
-	glRotateY(rotation);
+	glRotateYi(rotation);
 	
 	// Apply transformation after rotation, and the rotation will correct the position
 	glTranslatef(me->variables->x, me->variables->y, me->variables->z);
@@ -842,7 +842,7 @@ void Piece_Red_loop(PieceRedObjectInstance *me) {
 	// Draw the purple piece
 	glPushMatrix();
 	glTranslatef(View_X, View_Y, z);
-	glRotateY(rotation);
+	glRotateYi(rotation);
 	
 	// Apply transformation after rotation, and the rotation will correct the position
 	glTranslatef(me->variables->x,me->variables->y ,me->variables->z);
@@ -860,7 +860,7 @@ void Piece_Red_loop(PieceRedObjectInstance *me) {
 
 void Piece_create(PieceObjectInstance *me) {
 
-	me->variables->relativeRotation = angleToDegrees(DSGM_GetAngle(128, 96, me->x + 16, me->y + 16));
+	me->variables->relativeRotation = DSGM_GetAngle(128, 96, me->x + 16, me->y + 16);
 	me->variables->distance = DSGM_Distance(128, 96, me->x + 16, me->y + 16);
 	me->bitshift = 12;
 	
@@ -912,8 +912,8 @@ void Piece_loop(PieceObjectInstance *me) {
 	//Move pieces along with the board
 	int r = rotation - me->variables->relativeRotation;
 	
-	me->x = 128 - 16 - ((cosLerp(degreesToAngle(r)) * me->variables->distance) >> me->bitshift);
-	me->y = 96 - 16 + ((sinLerp(degreesToAngle(r)) * me->variables->distance) >> me->bitshift);
+	me->x = 128 - 16 - ((cosLerp(r) * me->variables->distance) >> me->bitshift);
+	me->y = 96 - 16 + ((sinLerp(r) * me->variables->distance) >> me->bitshift);
 	
 	//Set piece on board
 	if(DSGM_release.Stylus){
