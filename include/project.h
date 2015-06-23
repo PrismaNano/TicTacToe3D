@@ -90,8 +90,6 @@ typedef struct {
 typedef struct {
 	DSGM_ObjectInstanceBase;
 	struct {
-		int ID;
-		int bx, by;
 		int x, y;
 		int relativeRotation;
 		int distance;

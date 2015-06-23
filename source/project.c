@@ -608,8 +608,6 @@ void renderer_create(rendererObjectInstance *me) {
 }
 
 void renderer_loop(rendererObjectInstance *me) {
-	glPushMatrix();
-	
 	//Switching between layers
 	if(DSGM_newpress.Stylus) {
 		if(DSGM_stylus.x < 30) {
@@ -679,6 +677,8 @@ void renderer_loop(rendererObjectInstance *me) {
 	//Scroll panoramic backgroud
 	DSGM_view[DSGM_TOP].x = (rotation / 32) % 512;
 	
+	
+	glPushMatrix();
 	
 	//Render board Models
 	glBindTexture(0, BoardTexture.id);
@@ -866,40 +866,40 @@ void Piece_create(PieceObjectInstance *me) {
 	
 	switch(me->spriteNumber){
 		case 5:
-			me->variables->bx = 0;
-			me->variables->by = 0;
+			me->bx = 0;
+			me->by = 0;
 			break;
 		case 6:
-			me->variables->bx = 1;
-			me->variables->by = 0;
+			me->bx = 1;
+			me->by = 0;
 			break;
 		case 7:
-			me->variables->bx = 2;
-			me->variables->by = 0;
+			me->bx = 2;
+			me->by = 0;
 			break;
 		case 8:
-			me->variables->bx = 0;
-			me->variables->by = 1;
+			me->bx = 0;
+			me->by = 1;
 			break;
 		case 9:
-			me->variables->bx = 1;
-			me->variables->by = 1;
+			me->bx = 1;
+			me->by = 1;
 			break;
 		case 10:
-			me->variables->bx = 2;
-			me->variables->by = 1;
+			me->bx = 2;
+			me->by = 1;
 			break;
 		case 11:
-			me->variables->bx = 0;
-			me->variables->by = 2;
+			me->bx = 0;
+			me->by = 2;
 			break;
 		case 12:
-			me->variables->bx = 1;
-			me->variables->by = 2;
+			me->bx = 1;
+			me->by = 2;
 			break;
 		case 13:
-			me->variables->bx = 2;
-			me->variables->by = 2;
+			me->bx = 2;
+			me->by = 2;
 			break;
 	}
 }
@@ -907,7 +907,7 @@ void Piece_create(PieceObjectInstance *me) {
 void Piece_loop(PieceObjectInstance *me) {
 	
 	//Display correct piece color
-	me->frame = Board[layer][me->variables->bx][me->variables->by].color;
+	me->frame = Board[layer][me->bx][me->by].color;
 
 	//Move pieces along with the board
 	int r = rotation - me->variables->relativeRotation;
@@ -919,9 +919,9 @@ void Piece_loop(PieceObjectInstance *me) {
 	if(DSGM_release.Stylus){
 		if(PieceTouched){
 			if(DSGM_stylus.x>me->x && DSGM_stylus.x<me->x+32 && DSGM_stylus.y>me->y && DSGM_stylus.y<me->y+32){
-				if(!Board[layer][me->variables->bx][me->variables->by].InUse){
-					if(DSGM_held.L)Board[layer][me->variables->bx][me->variables->by].color = RED;
-					if(!DSGM_held.L)Board[layer][me->variables->bx][me->variables->by].color = BLUE;
+				if(!Board[layer][me->bx][me->by].InUse){
+					if(DSGM_held.L)Board[layer][me->bx][me->by].color = RED;
+					if(!DSGM_held.L)Board[layer][me->bx][me->by].color = BLUE;
 					PieceTouched = false;
 				}
 			}
