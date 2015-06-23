@@ -464,7 +464,7 @@ void DSGM_SetupRooms(int room) {
 	
 	//DSGM_SetupObjectInstances(&DSGM_Rooms[ROOM].objectGroups[SCREEN][OBJECT_GROUP_NUMBER], &DSGM_Objects[OBJECT_NAME], DSGM_TOP, HOW_MANY, X1, Y1, X2, Y2, ...);
 	
-	DSGM_SetupObjectGroups(&DSGM_Rooms[Room_1], DSGM_BOTTOM, 15);
+	DSGM_SetupObjectGroups(&DSGM_Rooms[Room_1], DSGM_BOTTOM, 7);
 	
 	//Slider button
 	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_BOTTOM][0], &DSGM_Objects[Slider_Obj], DSGM_BOTTOM, 1, 224, 16);
@@ -478,19 +478,21 @@ void DSGM_SetupRooms(int room) {
 	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_BOTTOM][4], &DSGM_Objects[PieceTemp_Obj], DSGM_BOTTOM, 1, 200, 160);	
 	
 	//Pieces
-	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_BOTTOM][5], &DSGM_Objects[Pieces_Obj], DSGM_BOTTOM, 1, 144, 49);	
-	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_BOTTOM][6], &DSGM_Objects[Pieces_Obj], DSGM_BOTTOM, 1, 112, 49);
-	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_BOTTOM][7], &DSGM_Objects[Pieces_Obj], DSGM_BOTTOM, 1, 80, 49);
-
-	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_BOTTOM][8], &DSGM_Objects[Pieces_Obj], DSGM_BOTTOM, 1, 144, 80);
-	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_BOTTOM][9], &DSGM_Objects[Pieces_Obj], DSGM_BOTTOM, 1, 112, 80);
-	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_BOTTOM][10], &DSGM_Objects[Pieces_Obj], DSGM_BOTTOM, 1, 80, 80);
-
-	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_BOTTOM][11], &DSGM_Objects[Pieces_Obj], DSGM_BOTTOM, 1, 145, 113);
-	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_BOTTOM][12], &DSGM_Objects[Pieces_Obj], DSGM_BOTTOM, 1, 112, 112);
-	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_BOTTOM][13], &DSGM_Objects[Pieces_Obj], DSGM_BOTTOM, 1, 80, 113);
+	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_BOTTOM][5], &DSGM_Objects[Pieces_Obj], DSGM_BOTTOM, 9,
+		144, 49,
+		112, 49,
+		80, 49,
+		
+		144, 80,
+		112, 80,
+		80, 80,
+		
+		145, 113,
+		112, 112,
+		80, 113
+	);
 	
-	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_BOTTOM][14], &DSGM_Objects[Arrow_Obj], DSGM_BOTTOM, 1, 238, 168);
+	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_BOTTOM][6], &DSGM_Objects[Arrow_Obj], DSGM_BOTTOM, 1, 238, 168);
 	
 
 	
