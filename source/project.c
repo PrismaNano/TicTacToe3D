@@ -33,142 +33,70 @@ typedef struct {
 ModelData Model[10];
 
 bool Row_Win(void) {
-	int layer = 0;
-	for(layer = 0; layer < 3; layer++) {
+	if(
+		(Board[0][0][0].color == BLUE &&
+		Board[1][1][1].color == BLUE &&
+		Board[2][2][2].color == BLUE) ||
+		
+		(Board[0][2][2].color == BLUE &&
+		Board[1][1][1].color == BLUE &&
+		Board[2][0][0].color == BLUE) ||
+		
+		(Board[0][2][0].color == BLUE &&
+		Board[1][1][1].color == BLUE &&
+		Board[2][0][2].color == BLUE) ||
+		
+		(Board[0][0][2].color == BLUE &&
+		Board[1][1][1].color == BLUE &&
+		Board[2][2][0].color == BLUE)
+	) return true;
+	
+	int i, layer;
+	for(i = 0; i < 3; i++) {
 		if(
-			(Board[layer][0][0].color == BLUE &&
-			Board[layer][1][0].color == BLUE &&
-			Board[layer][2][0].color == BLUE) ||
+			(Board[0][0][i].color == BLUE &&
+			Board[1][1][i].color == BLUE &&
+			Board[2][2][i].color == BLUE) ||
 			
-			(Board[layer][0][1].color == BLUE &&
-			Board[layer][1][1].color == BLUE &&
-			Board[layer][2][1].color == BLUE) ||
+			(Board[0][2][i].color == BLUE &&
+			Board[1][1][i].color == BLUE &&
+			Board[2][0][i].color == BLUE) ||
 			
-			(Board[layer][0][2].color == BLUE &&
-			Board[layer][1][2].color == BLUE &&
-			Board[layer][2][2].color == BLUE) ||
-			/*----------------------------------*/
-			(Board[layer][0][0].color == BLUE &&
-			Board[layer][0][1].color == BLUE &&
-			Board[layer][0][2].color == BLUE) ||
+			(Board[0][i][0].color == BLUE &&
+			Board[1][i][1].color == BLUE &&
+			Board[2][i][2].color == BLUE) ||
 			
-			(Board[layer][1][0].color == BLUE &&
-			Board[layer][1][1].color == BLUE &&
-			Board[layer][1][2].color == BLUE) ||
-			
-			(Board[layer][2][0].color == BLUE &&
-			Board[layer][2][1].color == BLUE &&
-			Board[layer][2][2].color == BLUE) ||
-			/*----------------------------------*/
-			(Board[layer][0][0].color == BLUE &&
-			Board[layer][1][1].color == BLUE &&
-			Board[layer][2][2].color == BLUE) ||
-			
-			(Board[layer][2][0].color == BLUE &&
-			Board[layer][1][1].color == BLUE &&
-			Board[layer][0][2].color == BLUE) ||
-			/*----------------------------------*/
-			(Board[0][0][0].color == BLUE &&
-			Board[1][0][0].color == BLUE &&
-			Board[2][0][0].color == BLUE) ||
-			
-			(Board[0][1][0].color == BLUE &&
-			Board[1][1][0].color == BLUE &&
-			Board[2][1][0].color == BLUE) ||
-			
-			(Board[0][2][0].color == BLUE &&
-			Board[1][2][0].color == BLUE &&
-			Board[2][2][0].color == BLUE) ||
-			
-			(Board[0][0][1].color == BLUE &&
-			Board[1][0][1].color == BLUE &&
-			Board[2][0][1].color == BLUE) ||
-			
-			(Board[0][1][1].color == BLUE &&
-			Board[1][1][1].color == BLUE &&
-			Board[2][1][1].color == BLUE) ||
-			
-			(Board[0][2][1].color == BLUE &&
-			Board[1][2][1].color == BLUE &&
-			Board[2][2][1].color == BLUE) ||
-			
-			(Board[0][0][2].color == BLUE &&
-			Board[1][0][2].color == BLUE &&
-			Board[2][0][2].color == BLUE) ||
-			
-			(Board[0][1][2].color == BLUE &&
-			Board[1][1][2].color == BLUE &&
-			Board[2][1][2].color == BLUE) ||
-			
-			(Board[0][2][2].color == BLUE &&
-			Board[1][2][2].color == BLUE &&
-			Board[2][2][2].color == BLUE) ||
-			/*----------------------------------*/
-			(Board[0][0][0].color == BLUE &&
-			Board[1][1][0].color == BLUE &&
-			Board[2][2][0].color == BLUE) ||
-			
-			(Board[0][0][1].color == BLUE &&
-			Board[1][1][1].color == BLUE &&
-			Board[2][2][1].color == BLUE) ||
-			
-			(Board[0][0][2].color == BLUE &&
-			Board[1][1][2].color == BLUE &&
-			Board[2][2][2].color == BLUE) ||
-			
-			(Board[0][2][0].color == BLUE &&
-			Board[1][1][0].color == BLUE &&
-			Board[2][0][0].color == BLUE) ||
-			
-			(Board[0][2][1].color == BLUE &&
-			Board[1][1][1].color == BLUE &&
-			Board[2][0][1].color == BLUE) ||
-			
-			(Board[0][2][2].color == BLUE &&
-			Board[1][1][2].color == BLUE &&
-			Board[2][0][2].color == BLUE) ||
-			
-			(Board[0][0][0].color == BLUE &&
-			Board[1][0][1].color == BLUE &&
-			Board[2][0][2].color == BLUE) ||
-			
-			(Board[0][1][0].color == BLUE &&
-			Board[1][1][1].color == BLUE &&
-			Board[2][1][2].color == BLUE) ||
-			
-			(Board[0][2][0].color == BLUE &&
-			Board[1][2][1].color == BLUE &&
-			Board[2][2][2].color == BLUE) ||
-			
-			(Board[0][0][2].color == BLUE &&
-			Board[1][0][1].color == BLUE &&
-			Board[2][0][0].color == BLUE) ||
-			
-			(Board[0][1][2].color == BLUE &&
-			Board[1][1][1].color == BLUE &&
-			Board[2][1][0].color == BLUE) ||
-			
-			(Board[0][2][2].color == BLUE &&
-			Board[1][2][1].color == BLUE &&
-			Board[2][2][0].color == BLUE) ||
-			/*----------------------------------*/
-			(Board[0][0][0].color == BLUE &&
-			Board[1][1][1].color == BLUE &&
-			Board[2][2][2].color == BLUE) ||
-			
-			(Board[0][2][2].color == BLUE &&
-			Board[1][1][1].color == BLUE &&
-			Board[2][0][0].color == BLUE) ||
-			
-			(Board[0][2][0].color == BLUE &&
-			Board[1][1][1].color == BLUE &&
-			Board[2][0][2].color == BLUE) ||
-			
-			(Board[0][0][2].color == BLUE &&
-			Board[1][1][1].color == BLUE &&
-			Board[2][2][0].color == BLUE)
+			(Board[0][i][2].color == BLUE &&
+			Board[1][i][1].color == BLUE &&
+			Board[2][i][0].color == BLUE)
 		) return true;
+		
+		for(layer = 0; layer < 3; layer++) {
+			if(
+				(Board[layer][0][i].color == BLUE &&
+				Board[layer][1][i].color == BLUE &&
+				Board[layer][2][i].color == BLUE) ||
+				
+				(Board[layer][i][0].color == BLUE &&
+				Board[layer][i][1].color == BLUE &&
+				Board[layer][i][2].color == BLUE) ||
+				
+				(Board[layer][0][0].color == BLUE &&
+				Board[layer][1][1].color == BLUE &&
+				Board[layer][2][2].color == BLUE) ||
+				
+				(Board[layer][2][0].color == BLUE &&
+				Board[layer][1][1].color == BLUE &&
+				Board[layer][0][2].color == BLUE) ||
+				
+				(Board[0][i][layer].color == BLUE &&
+				Board[1][i][layer].color == BLUE &&
+				Board[2][i][layer].color == BLUE)
+			
+			) return true;
+		}
 	}
+	
 	return false;
 }
 
