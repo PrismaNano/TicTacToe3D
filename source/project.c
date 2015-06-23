@@ -514,7 +514,7 @@ void renderer_create(rendererObjectInstance *me) {
     //);
 	
 	//Set view
-	gluLookAt(-2, 0.7, 0, 0, 0.7, 0, 0, 1, 0);
+	gluLookAt(-2.0f, 0.68f, 0, 0, 0, 0, 0, 1.0f, 0);
 	
 	glLight(0, RGB15(31, 31, 31), 0, floattov10(-1.0), 0);
 	glPolyFmt(POLY_ALPHA(31) | POLY_CULL_BACK | POLY_MODULATION | POLY_FORMAT_LIGHT0);
