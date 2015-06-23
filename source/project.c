@@ -562,6 +562,9 @@ void renderer_loop(rendererObjectInstance *me) {
 	x = DSGM_stylus.x;
 	y = DSGM_stylus.y;
 	
+	//Rotatng the board
+	DSGM_RotateBackground(DSGM_BOTTOM, rotation);
+	
 	if(!PieceTouched){
 		// Only rotate board if you touch in a certain area
 		if(DSGM_newpress.Stylus && DSGM_stylus.x > 32 && DSGM_stylus.x < 256 - 32) {
@@ -580,9 +583,6 @@ void renderer_loop(rendererObjectInstance *me) {
 			angle_2 = angle_1 - DSGM_GetAngle(128, 96, x, y);
 			rotation = rotateboard - angle_2;
 		}
-	
-		//Rotatng the board
-		DSGM_RotateBackground(DSGM_BOTTOM, rotation);
 	}
 
 	//Load 3d pieces
