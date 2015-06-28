@@ -469,7 +469,7 @@ void DSGM_SetupRooms(int room) {
 	DSGM_SetupObjectGroups(&DSGM_Rooms[Room_1], DSGM_BOTTOM, 7);
 	
 	//Slider button
-	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_BOTTOM][0], &DSGM_Objects[Slider_Obj], DSGM_BOTTOM, 1, 224, 16);
+	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_BOTTOM][0], &DSGM_Objects[Slider_Obj], DSGM_BOTTOM, 1, 224, 75);
 	
 	//Layer buttons
 	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_BOTTOM][1], &DSGM_Objects[Layer_1_Obj], DSGM_BOTTOM, 1, 0, 0);
@@ -857,6 +857,9 @@ void Piece_loop(PieceObjectInstance *me) {
 					PieceTouched = false;
 				}
 			}
+			else{
+				PieceTouched = false;
+			}
 		}
 	}
 }
@@ -970,6 +973,5 @@ void PieceTemp_loop(PieceTempObjectInstance *me){
 	else{
 		me->x = 208;
 		me->y = 160;
-		PieceTouched = false;
 	}
 }
