@@ -129,6 +129,8 @@ DSGM_Texture PieceRedTexture = DSGM_FORM_RAM_TEXTURE(GL_RGB, TEXTURE_SIZE_128, T
 DSGM_Model TableTopModel;
 DSGM_Texture TableTopTexture = DSGM_FORM_RAM_TEXTURE(GL_RGB, TEXTURE_SIZE_128, TEXTURE_SIZE_128, TableTop_Texture_bin);
 
+DSGM_Model ArrowModel;
+DSGM_Texture ArrowTexture = DSGM_FORM_RAM_TEXTURE(GL_RGB, TEXTURE_SIZE_128, TEXTURE_SIZE_128, Arrow_Texture_bin);
 // Resources
 DSGM_Sound DSGM_Sounds[DSGM_SOUND_COUNT] = {
 };
@@ -848,7 +850,7 @@ void Piece_loop(PieceObjectInstance *me) {
 	//Set piece on board
 	if(DSGM_release.Stylus){
 		if(PieceTouched){
-			if(DSGM_stylus.x>me->x && DSGM_stylus.x<me->x+32 && DSGM_stylus.y>me->y && DSGM_stylus.y<me->y+32){
+			if(DSGM_StylusOverObjectInstance(me)){
 				if(!Board[layer][me->bx][me->by].InUse){
 					if(DSGM_held.L)Board[layer][me->bx][me->by].color = RED;
 					if(!DSGM_held.L)Board[layer][me->bx][me->by].color = BLUE;
@@ -877,15 +879,19 @@ void Slider_loop(SliderObjectInstance *me) {
 		}
 	}
 	else{
-		me->y -= (DSGM_held.Up - DSGM_held.Down) * 3;
+		me->y -= (DSGM_held.Up - DSGM_held.Down);
 		me->frame = 1;
 	}
 	
 	if(me->variables->touched) {
 		me->y = DSGM_stylus.y - 10;
 		me->frame = 1;
-		View_X = (DSGM_stylus.y - 20) / 20.0f;
 	}
+	
+	if(me->y < 8)   me->y = 8;
+	if(me->y > 152) me->y = 152;	
+	
+	View_X = (me->y - 20) / 28.0f;
 	
 	if(!DSGM_held.Stylus) {
 		me->variables->touched = false;
@@ -894,9 +900,6 @@ void Slider_loop(SliderObjectInstance *me) {
 	if(!zoom && !me->variables->touched) {
 		me->frame = 0;
 	}
-	
-	if(me->y < 8)   me->y = 8;
-	if(me->y > 152) me->y = 152;
 }
 
 void Layer_1_create(Layer1ObjectInstance *me) {
@@ -967,6 +970,6 @@ void PieceTemp_loop(PieceTempObjectInstance *me){
 	else{
 		me->x = 208;
 		me->y = 160;
-		//PieceTouched = false;
+		PieceTouched = false;
 	}
 }
