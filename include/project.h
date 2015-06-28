@@ -21,6 +21,9 @@
 #include "TableTop_bin.h"
 #include "TableTop_Texture_bin.h"
 
+#include "Arrow_bin.h"
+#include "Arrow_Texture_bin.h"
+
 // No sounds, no enum
 //typedef enum {
 //} DSGM_SoundNames;
@@ -59,6 +62,7 @@ typedef enum {
 	Layer_3_Obj,
 	Arrow_Obj,
 	PieceTemp_Obj,
+	Pointer_Obj,
 } DSGM_ObjectNames;
 
 typedef struct {
@@ -133,6 +137,13 @@ typedef struct {
 	} *variables;
 } PieceTempObjectInstance;
 
+typedef struct {
+	DSGM_ObjectInstanceBase;
+	struct {
+		float x,y,z;
+	} *variables;
+} PointerObjectInstance;
+
 typedef enum {
 	Room_1,
 } DSGM_RoomNames;
@@ -179,3 +190,6 @@ void Arrow_loop(ArrowObjectInstance *me);
 void PieceTemp_create(PieceTempObjectInstance *me);
 void PieceTemp_loop(PieceTempObjectInstance *me);
 void PieceTemp_loop(PieceTempObjectInstance *me);
+
+void Pointer_create(PointerObjectInstance *me);
+void Pointer_loop(PointerObjectInstance *me);
