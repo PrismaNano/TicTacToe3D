@@ -102,7 +102,7 @@ int DegreesToRadians(int degrees) {
 	return degrees * M_PI / 180;
 }
 
-void reset_board(void) {	
+void reset_board(void) {
 	memset(Board, NONE, sizeof(Board));
 }
 
@@ -658,32 +658,9 @@ void Debugger_loop(DebuggerObjectInstance *me) {
 }
 
 void Piece_Blue_create(PieceBlueObjectInstance *me) {
-
-	switch(me->x){
-		case 0:
-			me->variables->x = 0.65;
-			break;
-		case 1:
-			me->variables->x = 0;
-			break;
-		case 2:
-			me->variables->x = -0.65;
-			break;
-	}
-	
-	me->variables->y = 1-layer;
-	
-	switch(me->y){
-		case 0:
-			me->variables->z = -0.65;
-			break;
-		case 1:
-			me->variables->z = 0;
-			break;
-		case 2:
-			me->variables->z = 0.65;
-			break;
-	}
+	me->variables->x = (1 - me->x) * 0.65;
+	me->variables->y = 1 - layer;
+	me->variables->z = (1 - me->y) * -0.65;
 }
 
 void Piece_Blue_loop(PieceBlueObjectInstance *me) {
@@ -699,40 +676,16 @@ void Piece_Blue_loop(PieceBlueObjectInstance *me) {
 	glCallList((u32 *)Piece_bin);
 	glPopMatrix(1);
 	
-	if(DSGM_newpress.Start){
-		DSGM_DeleteObjectInstance(me);
+	if(DSGM_newpress.Start) {
 		DSGM_ClearText(1);
 		reset_board();
 	}
 }
 
 void Piece_Red_create(PieceRedObjectInstance *me) {
-	
-	switch(me->x){
-		case 0:
-			me->variables->x = 0.65;
-			break;
-		case 1:
-			me->variables->x = 0;
-			break;
-		case 2:
-			me->variables->x = -0.65;
-			break;
-	}
-	
-	me->variables->y = 1-layer;	
-	
-	switch(me->y){
-		case 0:
-			me->variables->z = -0.65;
-			break;
-		case 1:
-			me->variables->z = 0;
-			break;
-		case 2:
-			me->variables->z = 0.65;
-			break;
-	}
+	me->variables->x = (1 - me->x) * 0.65;
+	me->variables->y = 1 - layer;
+	me->variables->z = (1 - me->y) * -0.65;
 }
 
 void Piece_Red_loop(PieceRedObjectInstance *me) {
@@ -748,8 +701,7 @@ void Piece_Red_loop(PieceRedObjectInstance *me) {
 	glCallList((u32 *)Piece_bin);
 	glPopMatrix(1);
 	
-	if(DSGM_newpress.Start){
-		DSGM_DeleteObjectInstance(me);
+	if(DSGM_newpress.Start) {
 		DSGM_ClearText(1);
 		reset_board();
 	}
