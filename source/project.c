@@ -102,14 +102,7 @@ int DegreesToRadians(int degrees) {
 	return degrees * M_PI / 180;
 }
 
-void reset_board(void) {
-	/*
-	int i, j, k;
-	for(i = 0; i < 3; i++) for(j = 0; j < 3; j++) for(k = 0; k < 3; k++) {
-		Board[i][j][k] = NONE;
-	}
-	*/
-	
+void reset_board(void) {	
 	memset(Board, NONE, sizeof(Board));
 }
 
@@ -581,26 +574,8 @@ void renderer_loop(rendererObjectInstance *me) {
 			rotation = rotateboard - angle_2;
 		}
 	}
-
-	//Load 3d pieces
-	/*int i, j;
-	
-	for(i = 0; i < 3; i++) for(j = 0; j < 3; j++) if(!Board[layer][i][j]) {
-		switch(Board[layer][i][j]) {
-			case BLUE:
-				DSGM_CreateObjectInstance(DSGM_TOP, j, i, &DSGM_Objects[Piece_Blue]);
-				Board[layer][i][j].InUse = true;
-				break;
-				
-			case RED:
-				DSGM_CreateObjectInstance(DSGM_TOP, j, i, &DSGM_Objects[Piece_Red]);
-				Board[layer][i][j].InUse = true;
-				break;
-		}
-	}*/
 	
 	if(Row_Win()) DSGM_DrawText(DSGM_TOP, 10, 5, "YOU WIN!");
-
 	
 	//Scroll panoramic backgroud
 	DSGM_view[DSGM_TOP].x = (rotation / 32) % 512;
@@ -637,13 +612,7 @@ void renderer_loop(rendererObjectInstance *me) {
 
 void Debugger_loop(DebuggerObjectInstance *me) {
 	//Toggle debug on/off
-	if(DSGM_newpress.A) {
-		if(Debug) {
-			Debug = false;
-			}else{
-			Debug = true;
-		}
-	}
+	if(DSGM_newpress.A) Debug = !Debug;
 
 	// Draw variables for debugging
 	if(Debug) {
@@ -791,44 +760,24 @@ void Piece_create(PieceObjectInstance *me) {
 	me->variables->distance = DSGM_Distance(128, 96, me->x + 16, me->y + 16);
 	me->bitshift = 12;
 	
-	switch(DSGM_GetObjectInstanceID(me)) {
-		case 0:
-			me->bx = 0;
-			me->by = 0;
-			break;
-		case 1:
-			me->bx = 1;
-			me->by = 0;
-			break;
-		case 2:
-			me->bx = 2;
-			me->by = 0;
-			break;
-		case 3:
-			me->bx = 0;
-			me->by = 1;
-			break;
-		case 4:
-			me->bx = 1;
-			me->by = 1;
-			break;
-		case 5:
-			me->bx = 2;
-			me->by = 1;
-			break;
-		case 6:
-			me->bx = 0;
-			me->by = 2;
-			break;
-		case 7:
-			me->bx = 1;
-			me->by = 2;
-			break;
-		case 8:
-			me->bx = 2;
-			me->by = 2;
-			break;
-	}
+	struct {
+		unsigned char x : 4;
+		unsigned char y : 4;
+	} positions[] = {
+		{ 0, 0 },
+		{ 1, 0 },
+		{ 2, 0 },
+		{ 0, 1 },
+		{ 1, 1 },
+		{ 2, 1 },
+		{ 0, 2 },
+		{ 1, 2 },
+		{ 2, 2 },
+	};
+	
+	int id = DSGM_GetObjectInstanceID(me);
+	me->bx = positions[id].x;
+	me->by = positions[id].y;
 }
 
 void Piece_loop(PieceObjectInstance *me) {
