@@ -462,9 +462,9 @@ void DSGM_SetupRooms(int room) {
 	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_BOTTOM][0], &DSGM_Objects[Slider_Obj], DSGM_BOTTOM, 1, 224, 75);
 	
 	//Layer buttons
-	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_BOTTOM][1], &DSGM_Objects[Layer_1_Obj], DSGM_BOTTOM, 1, 0, 0);
-	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_BOTTOM][2], &DSGM_Objects[Layer_2_Obj], DSGM_BOTTOM, 1, 0, 56);
-	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_BOTTOM][3], &DSGM_Objects[Layer_3_Obj], DSGM_BOTTOM, 1, 0, 112);
+	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_BOTTOM][1], &DSGM_Objects[Layer_1_Obj], DSGM_BOTTOM, 1, 0, 8);
+	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_BOTTOM][2], &DSGM_Objects[Layer_2_Obj], DSGM_BOTTOM, 1, 0, 64);
+	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_BOTTOM][3], &DSGM_Objects[Layer_3_Obj], DSGM_BOTTOM, 1, 0, 120);
 	
 	//Pieces
 	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_BOTTOM][4], &DSGM_Objects[Pieces_Obj], DSGM_BOTTOM, 9,
