@@ -4,9 +4,9 @@
 #define DSGM_SOUND_EFFECT_COUNT 0
 #define DSGM_SOUND_COUNT (DSGM_SOUND_STREAM_COUNT + DSGM_SOUND_EFFECT_COUNT)
 #define DSGM_BACKGROUND_COUNT 5
-#define DSGM_PALETTE_COUNT 4
-#define DSGM_SPRITE_COUNT 4
-#define DSGM_OBJECT_COUNT 12
+#define DSGM_PALETTE_COUNT 6
+#define DSGM_SPRITE_COUNT 6
+#define DSGM_OBJECT_COUNT 15
 #define DSGM_ROOM_COUNT 1
 
 // Include backgrounds, palettes and sprites to be loaded from RAM
@@ -41,6 +41,8 @@ typedef enum {
 	SliderPal,
 	LayerPal,
 	ArrowPal,
+	TextBarPal,
+	ZBarPal,
 } DSGM_PaletteNames;
 
 typedef enum {
@@ -48,6 +50,8 @@ typedef enum {
 	Slider_Spr,
 	Layers_Spr,
 	Arrow_Spr,
+	TextBar_Spr,
+	ZBar_Spr,
 } DSGM_SpriteNames;
 
 typedef enum {
@@ -62,7 +66,8 @@ typedef enum {
 	Layer_3_Obj,
 	Arrow_Obj,
 	PieceTemp_Obj,
-	Pointer_Obj,
+	TextBar_Obj,
+	ZBar_Obj,
 } DSGM_ObjectNames;
 
 typedef struct {
@@ -140,9 +145,14 @@ typedef struct {
 typedef struct {
 	DSGM_ObjectInstanceBase;
 	struct {
-		float x,y,z;
 	} *variables;
-} PointerObjectInstance;
+} TextBarObjectInstance;
+
+typedef struct {
+	DSGM_ObjectInstanceBase;
+	struct {
+	} *variables;
+} ZBarObjectInstance;
 
 typedef enum {
 	Room_1,
@@ -191,5 +201,8 @@ void PieceTemp_create(PieceTempObjectInstance *me);
 void PieceTemp_loop(PieceTempObjectInstance *me);
 void PieceTemp_loop(PieceTempObjectInstance *me);
 
-void Pointer_create(PointerObjectInstance *me);
-void Pointer_loop(PointerObjectInstance *me);
+void TextBar_create(TextBarObjectInstance *me);
+void TextBar_loop(TextBarObjectInstance *me);
+
+void ZBar_create(ZBarObjectInstance *me);
+void ZBar_loop(ZBarObjectInstance *me);
