@@ -13,6 +13,7 @@ float View_Y, View_X;
 bool Debug;
 bool zoom;
 bool PieceTouched;
+bool GamePaused;
 
 typedef enum {
 	NONE,
@@ -98,6 +99,45 @@ bool Row_Win(void) {
 	return false;
 }
 
+void DSGMGlDrawTri(){
+
+    glNormal(NORMAL_PACK(0,inttov10(-1),0));
+
+    GFX_TEX_COORD = (TEXTURE_PACK(0, inttot16(128)));
+    glVertex3v16(floattov16(-1),  floattov16(-1), 0 );
+    
+    GFX_TEX_COORD = (TEXTURE_PACK(inttot16(128),inttot16(128)));
+    glVertex3v16(floattov16(1),   floattov16(-1), 0 );
+    
+    GFX_TEX_COORD = (TEXTURE_PACK(inttot16(128), 0));
+    glVertex3v16(0,   floattov16(1), 0 );
+
+}
+
+void Draw_Triangle(float x, float y, float z){
+glColor3f(1, 1, 1);
+	//glBegin(GL_TRIANGLES);							// Start Drawing A Triangle
+		glColor3f(1.0f,0.0f,0.0f);
+		//glColor3f(1.0f,0.0f,0.0f);					// Set Top Point Of Triangle To Red
+		glVertex3f( 0.0f, 1.0f, 0.0f);				// First Point Of The Triangle
+		//glColor3f(0.0f,1.0f,0.0f);					// Set Left Point Of Triangle To Green
+		glVertex3f(-1.0f,-1.0f, 0.0f);				// Second Point Of The Triangle
+		//glColor3f(0.0f,0.0f,1.0f);					// Set Right Point Of Triangle To Blue
+		glVertex3f( 1.0f,-1.0f, 0.0f);				// Third Point Of The Triangle
+	//glEnd();
+}
+
+void DrawTriange(){
+	glColor3b(255,0,0);
+	glVertex3v16(inttov16(-1),inttov16(-1),0);
+
+	glColor3b(0,255,0);
+	glVertex3v16(inttov16(1), inttov16(-1), 0);
+	
+	glColor3b(0,0,255);
+	glVertex3v16(inttov16(0), inttov16(1), 0);
+}
+
 int DegreesToRadians(int degrees) {
 	return degrees * M_PI / 180;
 }
@@ -121,6 +161,7 @@ DSGM_Texture TableTopTexture = DSGM_FORM_RAM_TEXTURE(GL_RGB, TEXTURE_SIZE_128, T
 
 DSGM_Model ArrowModel;
 DSGM_Texture ArrowTexture = DSGM_FORM_RAM_TEXTURE(GL_RGB, TEXTURE_SIZE_128, TEXTURE_SIZE_128, Arrow_Texture_bin);
+
 // Resources
 DSGM_Sound DSGM_Sounds[DSGM_SOUND_COUNT] = {
 };
@@ -137,14 +178,17 @@ DSGM_Palette DSGM_Palettes[DSGM_PALETTE_COUNT] = {
 	DSGM_FORM_NITRO_PALETTE(Pieces),
 	DSGM_FORM_NITRO_PALETTE(Slider),
 	DSGM_FORM_NITRO_PALETTE(Layer_Buttons),
-	DSGM_FORM_NITRO_PALETTE(Arrow),
+	DSGM_FORM_NITRO_PALETTE(Text_Box),
+	DSGM_FORM_NITRO_PALETTE(ZBar),
 };
 
 DSGM_Sprite DSGM_Sprites[DSGM_SPRITE_COUNT] = {
 	DSGM_FORM_NITRO_SPRITE(Pieces, PiecePal, SpriteSize_32x32, 3),
-	DSGM_FORM_NITRO_SPRITE(Slider, SliderPal, SpriteSize_32x16, 2),
-	DSGM_FORM_NITRO_SPRITE(Layer_Buttons, LayerPal, SpriteSize_32x64, 6),
+	DSGM_FORM_NITRO_SPRITE(Slider, SliderPal, SpriteSize_32x16, 3),
+	DSGM_FORM_NITRO_SPRITE(Layer_Buttons, LayerPal, SpriteSize_32x64, 7),
 	DSGM_FORM_NITRO_SPRITE(Arrow, ArrowPal, SpriteSize_16x16, 4),
+	DSGM_FORM_NITRO_SPRITE(Text_Box, ArrowPal, SpriteSize_64x32, 9),
+	DSGM_FORM_NITRO_SPRITE(ZBar, TextBarPal, SpriteSize_32x64, 4),
 };
 
 DSGM_Object DSGM_Objects[DSGM_OBJECT_COUNT] = {
@@ -279,6 +323,28 @@ DSGM_Object DSGM_Objects[DSGM_OBJECT_COUNT] = {
 		
 		sizeof(*((PieceTempObjectInstance *)0)->variables)
 	},
+		//Textbox
+	{
+		&DSGM_Sprites[TextBar_Spr],
+		(DSGM_Event)TextBar_create,
+		(DSGM_Event)TextBar_loop,	
+		DSGM_NO_EVENT,
+		DSGM_NO_EVENT,
+		NULL, 0,
+		
+		sizeof(*((TextBarObjectInstance *)0)->variables)
+	},
+		//Zoom Bar
+	{
+		&DSGM_Sprites[ZBar_Spr],
+		(DSGM_Event)ZBar_create,
+		(DSGM_Event)ZBar_loop,	
+		DSGM_NO_EVENT,
+		DSGM_NO_EVENT,
+		NULL, 0,
+		
+		sizeof(*((ZBarObjectInstance *)0)->variables)
+	},
 	// Object_Example
 	/*{
 		&DSGM_Sprites[Sprite],
@@ -302,7 +368,7 @@ DSGM_Room DSGM_Rooms[DSGM_ROOM_COUNT] = {
 			{
 				// Layer 0
 				{
-					&DSGM_Backgrounds[BGCoffee1],//Background
+					DSGM_DEFAULT_FONT,			//Background
 					DSGM_BOTTOM,				// Screen
 					0,							// Layer
 					false,						// Attached to view system
@@ -456,10 +522,10 @@ void DSGM_SetupRooms(int room) {
 	
 	//DSGM_SetupObjectInstances(&DSGM_Rooms[ROOM].objectGroups[SCREEN][OBJECT_GROUP_NUMBER], &DSGM_Objects[OBJECT_NAME], DSGM_TOP, HOW_MANY, X1, Y1, X2, Y2, ...);
 	
-	DSGM_SetupObjectGroups(&DSGM_Rooms[Room_1], DSGM_BOTTOM, 7);
+	DSGM_SetupObjectGroups(&DSGM_Rooms[Room_1], DSGM_BOTTOM, 10);
 	
 	//Slider button
-	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_BOTTOM][0], &DSGM_Objects[Slider_Obj], DSGM_BOTTOM, 1, 224, 75);
+	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_BOTTOM][0], &DSGM_Objects[Slider_Obj], DSGM_BOTTOM, 1, 224, 80);
 	
 	//Layer buttons
 	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_BOTTOM][1], &DSGM_Objects[Layer_1_Obj], DSGM_BOTTOM, 1, 0, 8);
@@ -486,6 +552,19 @@ void DSGM_SetupRooms(int room) {
 	
 	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_BOTTOM][6], &DSGM_Objects[Arrow_Obj], DSGM_BOTTOM, 1, 238, 168);
 	
+	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_BOTTOM][7], &DSGM_Objects[TextBar_Obj], DSGM_BOTTOM, 4,
+		64, 60,
+		128, 60,
+		64, 108,
+		128, 108
+	);
+	
+	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_BOTTOM][8], &DSGM_Objects[ZBar_Obj], DSGM_BOTTOM, 3,
+		224, -8,
+		224, 56,
+		224, 120
+	);
+	
 	if(room != DSGM_ALL_ROOMS) return;
 }
 
@@ -495,9 +574,10 @@ void renderer_create(rendererObjectInstance *me) {
 	
 	//Loading Textures
 	DSGM_LoadTexture(&BoardTexture);
+	DSGM_LoadTexture(&TableTopTexture);
 	DSGM_LoadTexture(&PieceBlueTexture);
 	DSGM_LoadTexture(&PieceRedTexture);
-	DSGM_LoadTexture(&TableTopTexture);
+	DSGM_LoadTexture(&ArrowTexture);
 	
 	//gluLookAt(
     //    eye_x, eye_y, eye_z,
@@ -511,10 +591,9 @@ void renderer_create(rendererObjectInstance *me) {
 	glLight(0, RGB15(31, 31, 31), 0, floattov10(-1.0), 0);
 	glPolyFmt(POLY_ALPHA(31) | POLY_CULL_BACK | POLY_MODULATION | POLY_FORMAT_LIGHT0);
 	
-	//Arranging the layers in a different order
-	DSGM_SetLayerPriority(DSGM_BOTTOM, 0, 1);
-	DSGM_SetLayerPriority(DSGM_BOTTOM, 1, 2);
-	DSGM_SetLayerPriority(DSGM_BOTTOM, 2, 3);	
+	//Arranging the layers in a different order	
+	DSGM_SetLayerPriority(DSGM_BOTTOM, 3, 2);
+	DSGM_SetLayerPriority(DSGM_BOTTOM, 1, 3);
 	
 	DSGM_SetLayerPriority(DSGM_TOP, 2, 3);
 	DSGM_SetLayerPriority(DSGM_TOP, 2, 3);
@@ -528,58 +607,81 @@ void renderer_create(rendererObjectInstance *me) {
 }
 
 void renderer_loop(rendererObjectInstance *me) {
-	//Switching between layers
-	if(DSGM_newpress.Stylus) {
-		if(DSGM_stylus.x < 30) {
-			if(DSGM_stylus.y > 6 && DSGM_stylus.y < 57)	layer = 0;
-			if(DSGM_stylus.y > 62 && DSGM_stylus.y < 113)	layer = 1;
-			if(DSGM_stylus.y > 118 && DSGM_stylus.y < 169)	layer = 2;
+
+	if(!GamePaused){
+		//Switching between layers
+		if(DSGM_newpress.Stylus) {
+			if(DSGM_stylus.x < 30) {
+				if(DSGM_stylus.y > 6 && DSGM_stylus.y < 57)	layer = 0;
+				if(DSGM_stylus.y > 62 && DSGM_stylus.y < 113)	layer = 1;
+				if(DSGM_stylus.y > 118 && DSGM_stylus.y < 169)	layer = 2;
+			}
 		}
+	
+		if(DSGM_newpress.Left && layer > 0) layer--;
+		if(DSGM_newpress.Right && layer < 2) layer++;	
+	
+		if(layer == 1 && View_Y > 0) View_Y -= 0.05f;
+		if(layer == 0 && View_Y > -1) View_Y -= 0.05f;
+	
+		if(layer == 2 && View_Y < 1) View_Y += 0.05f;
+		if(layer == 1 && View_Y < 0) View_Y += 0.05f;
+	
+		if(DSGM_held.Up && View_X > 0.0f) View_X -= 0.05f;
+		if(DSGM_held.Down && View_X < 2.5f) View_X += 0.05f;
+	
+		x = DSGM_stylus.x;
+		y = DSGM_stylus.y;
+	
+		//Rotatng the board
+		DSGM_RotateBackground(DSGM_BOTTOM, rotation);
+	
+		if(!PieceTouched){
+			// Only rotate board if you touch in a certain area
+			if(DSGM_newpress.Stylus && DSGM_stylus.x > 32 && DSGM_stylus.x < 256 - 32) {
+				angle_1 = DSGM_GetAngle(128, 96, x, y);
+				touch = true;
+			}
+	
+			//Store position of angle
+			if(!DSGM_held.Stylus) {
+				rotateboard = rotation;
+				touch = false;
+			}
+	
+			//Adjusting the angle of the board
+			if(touch) {
+				angle_2 = angle_1 - DSGM_GetAngle(128, 96, x, y);
+				rotation = rotateboard - angle_2;
+			}
+		}
+	
+		if(Row_Win()) DSGM_DrawText(DSGM_TOP, 10, 5, "YOU WIN!");
+	
+		//Scroll panoramic backgroud
+		DSGM_view[DSGM_TOP].x = (rotation / 32) % 512;
 	}
 	
-	if(DSGM_newpress.Left && layer > 0) layer--;
-	if(DSGM_newpress.Right && layer < 2) layer++;	
+	if(DSGM_newpress.Start){	
 	
-	if(layer == 1 && View_Y > 0) View_Y -= 0.05f;
-	if(layer == 0 && View_Y > -1) View_Y -= 0.05f;
-	
-	if(layer == 2 && View_Y < 1) View_Y += 0.05f;
-	if(layer == 1 && View_Y < 0) View_Y += 0.05f;
-	
-	if(DSGM_held.Up && View_X > 0.0f) View_X -= 0.05f;
-	if(DSGM_held.Down && View_X < 2.5f) View_X += 0.05f;
-	
-	x = DSGM_stylus.x;
-	y = DSGM_stylus.y;
-	
-	//Rotatng the board
-	DSGM_RotateBackground(DSGM_BOTTOM, rotation);
-	
-	if(!PieceTouched){
-		// Only rotate board if you touch in a certain area
-		if(DSGM_newpress.Stylus && DSGM_stylus.x > 32 && DSGM_stylus.x < 256 - 32) {
-			angle_1 = DSGM_GetAngle(128, 96, x, y);
-			touch = true;
-		}
-	
-		//Store position of angle
-		if(!DSGM_held.Stylus) {
-			rotateboard = rotation;
+		if(!GamePaused){
+			bgHide(7);
+			DSGM_SetBrightness(DSGM_TOP, -10);
+			DSGM_DrawText(DSGM_TOP, 0,  16, "Game Paused");
+			DSGM_DrawText(DSGM_BOTTOM, 10, 9, "Resume Game");
+			DSGM_DrawText(DSGM_BOTTOM, 11, 15, "Main Menu");
 			touch = false;
+			GamePaused = true;
 		}
-	
-		//Adjusting the angle of the board
-		if(touch) {
-			angle_2 = angle_1 - DSGM_GetAngle(128, 96, x, y);
-			rotation = rotateboard - angle_2;
+		else{
+			DSGM_ClearText(0);
+			bgShow(7);
+			DSGM_SetBrightness(DSGM_TOP, 0);
+			DSGM_ClearText(1);
+			//DSGM_FadeOutToBlack(DSGM_BOTTOM, 5);
+			GamePaused = false;
 		}
 	}
-	
-	if(Row_Win()) DSGM_DrawText(DSGM_TOP, 10, 5, "YOU WIN!");
-	
-	//Scroll panoramic backgroud
-	DSGM_view[DSGM_TOP].x = (rotation / 32) % 512;
-	
 	
 	glPushMatrix();
 	
@@ -590,14 +692,6 @@ void renderer_loop(rendererObjectInstance *me) {
 	glRotateYi(rotation);
 	
 	glPushMatrix();
-	glTranslatef(0.0f, 1.0f, 0.0f);
-	glCallList((u32 *)Board_bin);
-	glPopMatrix(1);
-	
-	glCallList((u32 *)Board_bin);
-	
-	glPushMatrix();
-	glTranslatef(0.0f, -1.0f, 0.0f);
 	glCallList((u32 *)Board_bin);
 	glPopMatrix(1);
 	
@@ -606,6 +700,13 @@ void renderer_loop(rendererObjectInstance *me) {
 	glTranslatef(0.0f, -1.2f, 0.0f);
 	glCallList((u32 *)TableTop_bin);
 	glPopMatrix(1);
+
+	
+	//glPushMatrix();
+	//glRotatef(0,0.0f,1.0f,0.0f);
+	//glTranslatef(0.0f, -1.2f, 0.0f);
+	//DrawTriange();
+	//glPopMatrix(1);
 	
 	glPopMatrix(1);
 }
@@ -676,7 +777,7 @@ void Piece_Blue_loop(PieceBlueObjectInstance *me) {
 	glCallList((u32 *)Piece_bin);
 	glPopMatrix(1);
 	
-	if(DSGM_newpress.Start) {
+	if(DSGM_newpress.Select) {
 		DSGM_ClearText(1);
 		reset_board();
 	}
@@ -701,7 +802,7 @@ void Piece_Red_loop(PieceRedObjectInstance *me) {
 	glCallList((u32 *)Piece_bin);
 	glPopMatrix(1);
 	
-	if(DSGM_newpress.Start) {
+	if(DSGM_newpress.Select) {
 		DSGM_ClearText(1);
 		reset_board();
 	}
@@ -733,9 +834,16 @@ void Piece_create(PieceObjectInstance *me) {
 }
 
 void Piece_loop(PieceObjectInstance *me) {
-	//Display correct piece color
-	me->frame = Board[layer][me->bx][me->by];
 
+	//Display correct piece color
+	if(!GamePaused){
+		me->frame = Board[layer][me->bx][me->by];
+	}
+	else{
+		PieceTouched = false;
+		me->frame = 0;
+	}
+	
 	//Move pieces along with the board
 	int r = rotation - me->variables->relativeRotation;
 	
@@ -758,42 +866,49 @@ void Piece_loop(PieceObjectInstance *me) {
 }
 
 void Slider_loop(SliderObjectInstance *me) {
-	if(DSGM_held.Up || DSGM_held.Down) {
-		if(!me->variables->touched) {
-			zoom = true;
-		}
-	}
-	else{
-		zoom = false;
-	}
-	
-	if(!zoom) {
-		if(DSGM_newpress.Stylus) {
-			if(DSGM_stylus.x > me-> x + 7 && DSGM_stylus.x < me->x + 26 && DSGM_stylus.y > me->y + 2 && DSGM_stylus.y < me->y + 12) {
-				me->variables->touched = true;
+	if(!GamePaused){
+
+		if(DSGM_held.Up || DSGM_held.Down) {
+			if(!me->variables->touched) {
+				zoom = true;
 			}
 		}
+		else{
+			zoom = false;
+		}
+	
+		if(!zoom) {
+			if(DSGM_newpress.Stylus) {
+				if(DSGM_stylus.x > me-> x + 7 && DSGM_stylus.x < me->x + 26 && DSGM_stylus.y > me->y + 2 && DSGM_stylus.y < me->y + 12) {
+					me->variables->touched = true;
+				}
+			}
+		}
+		else{
+			me->y -= (DSGM_held.Up - DSGM_held.Down);
+			me->frame = 2;
+		}
+	
+		if(me->variables->touched) {
+			me->y = DSGM_stylus.y - 10;
+			me->frame = 2;
+		}
+	
+		if(me->y < 8)   me->y = 8;
+		if(me->y > 152) me->y = 152;	
+	
+		View_X = (me->y - 20) / 28.0f;
+	
+		if(!DSGM_held.Stylus) {
+			me->variables->touched = false;
+		}
+	
+		if(!zoom && !me->variables->touched) {
+			me->frame = 1;
+		}
 	}
 	else{
-		me->y -= (DSGM_held.Up - DSGM_held.Down);
-		me->frame = 1;
-	}
-	
-	if(me->variables->touched) {
-		me->y = DSGM_stylus.y - 10;
-		me->frame = 1;
-	}
-	
-	if(me->y < 8)   me->y = 8;
-	if(me->y > 152) me->y = 152;	
-	
-	View_X = (me->y - 20) / 28.0f;
-	
-	if(!DSGM_held.Stylus) {
 		me->variables->touched = false;
-	}
-	
-	if(!zoom && !me->variables->touched) {
 		me->frame = 0;
 	}
 }
@@ -803,12 +918,17 @@ void Layer_1_create(Layer1ObjectInstance *me) {
 }
 
 void Layer_1_loop(Layer1ObjectInstance *me) {
-	if(layer == 0) {
-		me->frame = 1;
+	if(!GamePaused){
+		if(layer == 0) {
+			me->frame = 2;
+		}
+		else{
+			me->frame = 1;
+		}
 	}
 	else{
 		me->frame = 0;
-	}
+	}	
 }
 
 void Layer_2_create(Layer2ObjectInstance *me) {
@@ -816,12 +936,16 @@ void Layer_2_create(Layer2ObjectInstance *me) {
 }
 
 void Layer_2_loop(Layer2ObjectInstance *me) {
-	if(layer == 1) {
-		me->frame = 3;
+	if(!GamePaused){
+		if(layer == 1) {
+			me->frame = 4;
+		}
+		else{
+			me->frame = 3;
+		}
 	}
 	else{
-		me->frame = 2;
-	}
+		me->frame = 0;	}	
 }
 
 void Layer_3_create(Layer3ObjectInstance *me) {
@@ -829,12 +953,17 @@ void Layer_3_create(Layer3ObjectInstance *me) {
 }
 
 void Layer_3_loop(Layer3ObjectInstance *me) {
-	if(layer == 2) {
-		me->frame = 5;
+	if(!GamePaused){
+		if(layer == 2) {
+			me->frame = 6;
+		}
+		else{
+			me->frame = 5;
+		}
 	}
 	else{
-		me->frame = 4;
-	}
+		me->frame = 0;
+	}		
 }
 
 void Arrow_create(ArrowObjectInstance *me) {
@@ -842,30 +971,93 @@ void Arrow_create(ArrowObjectInstance *me) {
 }
 
 void Arrow_loop(ArrowObjectInstance *me) {
-	if(PieceTouched) me->frame = 0;
-	else DSGM_AnimateObjectInstance(me, 1, 3, 10);
+
+	if(!GamePaused){
+		if(PieceTouched) me->frame = 0;
+		else DSGM_AnimateObjectInstance(me, 1, 3, 10);
+	}
+	else{
+		me->frame = 0;
+	}
 }
 
 void PieceTemp_create(PieceTempObjectInstance *me){
 }
 
 void PieceTemp_loop(PieceTempObjectInstance *me){
-	me->frame = 1;
+
+	if(!GamePaused){
+		me->frame = 1;
 	
-	if(DSGM_newpress.Stylus && DSGM_stylus.x>me->x+5 && DSGM_stylus.x<me->x+32-6&&DSGM_stylus.y>me->y+6&&DSGM_stylus.y<me->y+32-6){
-		PieceTouched = true;
-	}
+		if(DSGM_newpress.Stylus && DSGM_stylus.x>me->x+5 && DSGM_stylus.x<me->x+32-6&&DSGM_stylus.y>me->y+6&&DSGM_stylus.y<me->y+32-6){
+			PieceTouched = true;
+		}
 	
-	if(DSGM_held.Stylus) {
-		if(PieceTouched) {
-			me->x = DSGM_stylus.x - 16;
-			me->y = DSGM_stylus.y - 16;
+		if(DSGM_held.Stylus) {
+			if(PieceTouched) {
+				me->x = DSGM_stylus.x - 16;
+				me->y = DSGM_stylus.y - 16;
+			}
+		}
+		else {
+			PieceTouched = false;
+		
+			me->x = 208;
+			me->y = 160;
 		}
 	}
-	else {
+	else{
 		PieceTouched = false;
-		
 		me->x = 208;
 		me->y = 160;
+		me->frame = 0;
+	}
+}
+
+void TextBar_create(TextBarObjectInstance *me){
+	me->priority = 1;
+}
+
+void TextBar_loop(TextBarObjectInstance *me){
+	if(!GamePaused){
+		me->frame = 0;
+	}
+	else{
+		switch(DSGM_GetObjectInstanceID(me)){
+			case 0:
+				me->frame = 6;
+				break;
+			case 1:
+				me->frame = 5;
+				break;
+			case 2:
+				me->frame = 6;
+			break;
+			case 3:
+				me->frame = 5;
+			break;
+		}
+	}
+}
+
+void ZBar_create(ZBarObjectInstance *me){	
+}
+
+void ZBar_loop(ZBarObjectInstance *me){
+	if(!GamePaused){
+		switch(DSGM_GetObjectInstanceID(me)){
+			case 0:
+				me->frame = 1;
+				break;
+			case 1:
+				me->frame = 2;
+				break;
+			case 2:
+				me->frame = 3;
+			break;
+		}
+	}
+	else{
+		me->frame = 0;
 	}
 }
