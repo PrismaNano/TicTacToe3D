@@ -68,6 +68,7 @@ typedef enum {
 	PieceTemp_Obj,
 	TextBar_Obj,
 	ZBar_Obj,
+	InfoBar_Obj,
 } DSGM_ObjectNames;
 
 typedef struct {
@@ -154,6 +155,12 @@ typedef struct {
 	} *variables;
 } ZBarObjectInstance;
 
+typedef struct {
+	DSGM_ObjectInstanceBase;
+	struct {
+	} *variables;
+} InfoBarObjectInstance;
+
 typedef enum {
 	Room_1,
 } DSGM_RoomNames;
@@ -206,3 +213,6 @@ void TextBar_loop(TextBarObjectInstance *me);
 
 void ZBar_create(ZBarObjectInstance *me);
 void ZBar_loop(ZBarObjectInstance *me);
+
+void InfoBar_create(InfoBarObjectInstance *me);
+void InfoBar_loop(InfoBarObjectInstance *me);

@@ -7,7 +7,6 @@ int angle_1, angle_2;
 int rotation, rotateboard, RotVelocity;
 bool touch;
 float x, y, z, a, b;
-int frames;
 int layer;
 float View_Y, View_X;
 bool Debug;
@@ -17,6 +16,12 @@ bool GamePaused;
 int fade;
 int Pause;
 int stage;
+int scroll;
+int turn;
+bool mode;
+
+enum {P2_TURN, P1_TURN, PC_TURN};
+enum {VS_HMN, VS_PC};
 
 typedef enum {
 	NONE,
@@ -376,6 +381,17 @@ DSGM_Object DSGM_Objects[DSGM_OBJECT_COUNT] = {
 		
 		sizeof(*((ZBarObjectInstance *)0)->variables)
 	},
+		//Info Bar
+	{
+		&DSGM_Sprites[TextBar_Spr],
+		(DSGM_Event)InfoBar_create,
+		(DSGM_Event)InfoBar_loop,	
+		DSGM_NO_EVENT,
+		DSGM_NO_EVENT,
+		NULL, 0,
+		
+		sizeof(*((InfoBarObjectInstance *)0)->variables)
+	},
 	// Object_Example
 	/*{
 		&DSGM_Sprites[Sprite],
@@ -546,10 +562,15 @@ void DSGM_SetupRooms(int room) {
 	
 	DSGM_SetupViews(&DSGM_Rooms[Room_1]);
 	
-	DSGM_SetupObjectGroups(&DSGM_Rooms[Room_1], DSGM_TOP, 2); //Don't forget to update number of object groups
+	DSGM_SetupObjectGroups(&DSGM_Rooms[Room_1], DSGM_TOP, 3); //Don't forget to update number of object groups
 	
 	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_TOP][0], &DSGM_Objects[renderer], DSGM_TOP, 1, 0, 0);
 	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_TOP][1], &DSGM_Objects[Debugger], DSGM_TOP, 1, 0, 0);
+	
+	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_TOP][2], &DSGM_Objects[InfoBar_Obj],  DSGM_TOP, 2,
+		0, -4,
+		64, -4
+	);
 	
 	//DSGM_SetupObjectInstances(&DSGM_Rooms[ROOM].objectGroups[SCREEN][OBJECT_GROUP_NUMBER], &DSGM_Objects[OBJECT_NAME], DSGM_TOP, HOW_MANY, X1, Y1, X2, Y2, ...);
 	
@@ -635,6 +656,16 @@ void renderer_create(rendererObjectInstance *me) {
 	DSGM_SetRotationCenter(DSGM_BOTTOM, 128, 96);
 	
 	glMatrixMode(GL_MODELVIEW);
+	
+	//Randomize turn at start of game
+	switch (mode){
+		case VS_HMN:
+			DSGM_Random(P1_TURN, PC_TURN);
+			break;
+		case VS_PC:
+			DSGM_Random(P2_TURN, P1_TURN);
+			break;
+	}
 }
 
 void renderer_loop(rendererObjectInstance *me) {
@@ -690,7 +721,8 @@ void renderer_loop(rendererObjectInstance *me) {
 		if(Row_Win()) DSGM_DrawText(DSGM_TOP, 10, 5, "YOU WIN!");
 	
 		//Scroll panoramic backgroud
-		DSGM_view[DSGM_TOP].x = (rotation / 32) % 512;
+		scroll = (rotation / 32) % 512;
+		DSGM_ScrollBackground(DSGM_TOP, 2, scroll, 0);
 	}
 	
 	if(DSGM_newpress.Start){
@@ -698,6 +730,7 @@ void renderer_loop(rendererObjectInstance *me) {
 		if(Pause==2)Pause = 3;
 	}
 	
+	//Pause menu
 	if(Pause==1){
 		if(stage==0)FadeOut(DSGM_BOTTOM);
 		if(fade==-15)stage = 1;
@@ -706,7 +739,7 @@ void renderer_loop(rendererObjectInstance *me) {
 			touch = false;
 			GamePaused = true;
 			DSGM_SetBrightness(DSGM_TOP, -10);
-			DSGM_DrawText(DSGM_TOP, 0,  16, "Game Paused");
+			DSGM_DrawText(DSGM_TOP, 0,  1, "Game Paused");
 			DSGM_DrawText(DSGM_BOTTOM, 10, 9, "Resume Game");
 			DSGM_DrawText(DSGM_BOTTOM, 11, 15, "Main Menu");
 			FadeIn(DSGM_BOTTOM);
@@ -764,8 +797,6 @@ void Debugger_loop(DebuggerObjectInstance *me) {
 		DSGM_ClearText(1);
 	
 		//Debugging
-		DSGM_DrawText(DSGM_TOP, 0,  3, "frames");
-		DSGM_DrawText(DSGM_TOP, 20, 3, "%d",frames);
 		DSGM_DrawText(DSGM_TOP, 20, 4, "%d",DSGM_stylus.x);
 		DSGM_DrawText(DSGM_TOP, 20, 5, "%d",DSGM_stylus.y);
 		DSGM_DrawText(DSGM_TOP, 0,  4, "DSGM_stylus.x");
@@ -1108,5 +1139,20 @@ void ZBar_loop(ZBarObjectInstance *me){
 	}
 	else{
 		me->frame = 0;
+	}
+}
+
+void InfoBar_create(InfoBarObjectInstance *me){	
+	me->priority = 1;
+}
+
+void InfoBar_loop(InfoBarObjectInstance *me){
+	switch(DSGM_GetObjectInstanceID(me)){
+		case 0:
+			me->frame = 2;
+			break;
+		case 1:
+			me->frame = 1;
+			break;
 	}
 }
