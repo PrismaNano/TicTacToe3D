@@ -1,7 +1,7 @@
 # TicTacToe3D
 
 ### Introducing the classic Tic Tac Toe 3D board game for DS!
-![](https://cloud.githubusercontent.com/assets/12837982/9126246/1f212288-3c79-11e5-8f05-bf6bff04e33b.png)
+![](https://raw.githubusercontent.com/PrismaNano/TicTacToe3D/gh-pages/Tic Tac Toe 3D Ad.png)
 ![](https://cloud.githubusercontent.com/assets/12837982/9126261/4c1e59ae-3c79-11e5-8291-be4aec5d51b8.png)
 Building the project
 --------------------
