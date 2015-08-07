@@ -693,33 +693,7 @@ void renderer_loop(rendererObjectInstance *me) {
 		DSGM_view[DSGM_TOP].x = (rotation / 32) % 512;
 	}
 	
-	if(DSGM_newpress.Start){	
-	
-		/*if(!GamePaused){
-			FadeOut(DSGM_BOTTOM);
-			if(fade==-16){
-				bgHide(7);
-				DSGM_SetBrightness(DSGM_TOP, -10);
-				DSGM_DrawText(DSGM_TOP, 0,  16, "Game Paused");
-					DSGM_DrawText(DSGM_BOTTOM, 10, 9, "Resume Game");
-				DSGM_DrawText(DSGM_BOTTOM, 11, 15, "Main Menu");
-				touch = false;
-				GamePaused = true;
-				FadeIn(DSGM_BOTTOM);
-			}
-		}
-		else{
-			FadeOut(DSGM_BOTTOM);
-			if(fade==-16){
-				DSGM_ClearText(0);
-				bgShow(7);
-				DSGM_SetBrightness(DSGM_TOP, 0);
-				DSGM_ClearText(1);
-				GamePaused = false;	
-				FadeIn(DSGM_BOTTOM);
-			}
-		}*/
-		
+	if(DSGM_newpress.Start){
 		if(Pause==0)Pause = 1;
 		if(Pause==2)Pause = 3;
 	}
