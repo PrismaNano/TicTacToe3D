@@ -14,6 +14,9 @@ bool Debug;
 bool zoom;
 bool PieceTouched;
 bool GamePaused;
+int fade;
+int Pause;
+int stage;
 
 typedef enum {
 	NONE,
@@ -125,6 +128,34 @@ glColor3f(1, 1, 1);
 		//glColor3f(0.0f,0.0f,1.0f);					// Set Right Point Of Triangle To Blue
 		glVertex3f( 1.0f,-1.0f, 0.0f);				// Third Point Of The Triangle
 	//glEnd();
+}
+
+void FadeIn(bool screen){
+	if(fade < 0)fade ++;
+	DSGM_SetBrightness(screen, fade);
+}
+
+void FadeOut(bool screen){
+	if(fade > -16)fade--;
+	DSGM_SetBrightness(screen, fade);
+}
+
+void FadeInTop(bool screen){
+	int i;
+
+	for(i=-16;i<1;i++){
+		DSGM_SetBrightness(screen, i);
+		swiWaitForVBlank();
+	}
+}
+
+void FadeOutTop(bool screen){
+	int i;
+
+	for(i=0;i>-16;i--){
+		DSGM_SetBrightness(screen, i);
+		swiWaitForVBlank();
+	}
 }
 
 void DrawTriange(){
@@ -595,7 +626,7 @@ void renderer_create(rendererObjectInstance *me) {
 	DSGM_SetLayerPriority(DSGM_BOTTOM, 3, 2);
 	DSGM_SetLayerPriority(DSGM_BOTTOM, 1, 3);
 	
-	DSGM_SetLayerPriority(DSGM_TOP, 2, 3);
+	DSGM_SetLayerPriority(DSGM_TOP, 0, 1);
 	DSGM_SetLayerPriority(DSGM_TOP, 2, 3);
 	
 	//Adjusting the position and rotatioon center of the rot bg
@@ -664,22 +695,61 @@ void renderer_loop(rendererObjectInstance *me) {
 	
 	if(DSGM_newpress.Start){	
 	
-		if(!GamePaused){
+		/*if(!GamePaused){
+			FadeOut(DSGM_BOTTOM);
+			if(fade==-16){
+				bgHide(7);
+				DSGM_SetBrightness(DSGM_TOP, -10);
+				DSGM_DrawText(DSGM_TOP, 0,  16, "Game Paused");
+					DSGM_DrawText(DSGM_BOTTOM, 10, 9, "Resume Game");
+				DSGM_DrawText(DSGM_BOTTOM, 11, 15, "Main Menu");
+				touch = false;
+				GamePaused = true;
+				FadeIn(DSGM_BOTTOM);
+			}
+		}
+		else{
+			FadeOut(DSGM_BOTTOM);
+			if(fade==-16){
+				DSGM_ClearText(0);
+				bgShow(7);
+				DSGM_SetBrightness(DSGM_TOP, 0);
+				DSGM_ClearText(1);
+				GamePaused = false;	
+				FadeIn(DSGM_BOTTOM);
+			}
+		}*/
+		
+		if(Pause==0)Pause = 1;
+		if(Pause==2)Pause = 3;
+	}
+	
+	if(Pause==1){
+		if(stage==0)FadeOut(DSGM_BOTTOM);
+		if(fade==-15)stage = 1;
+		if(stage==1){
 			bgHide(7);
+			touch = false;
+			GamePaused = true;
 			DSGM_SetBrightness(DSGM_TOP, -10);
 			DSGM_DrawText(DSGM_TOP, 0,  16, "Game Paused");
 			DSGM_DrawText(DSGM_BOTTOM, 10, 9, "Resume Game");
 			DSGM_DrawText(DSGM_BOTTOM, 11, 15, "Main Menu");
-			touch = false;
-			GamePaused = true;
+			FadeIn(DSGM_BOTTOM);
+			if(fade==0)Pause = 2;
 		}
-		else{
-			DSGM_ClearText(0);
+	}
+	if(Pause==3){
+		if(stage==1)FadeOut(DSGM_BOTTOM);
+		if(fade==-15)stage = 0;
+		if(stage==0){
 			bgShow(7);
-			DSGM_SetBrightness(DSGM_TOP, 0);
+			DSGM_ClearText(0);
 			DSGM_ClearText(1);
-			//DSGM_FadeOutToBlack(DSGM_BOTTOM, 5);
 			GamePaused = false;
+			DSGM_SetBrightness(DSGM_TOP, 0);
+			FadeIn(DSGM_BOTTOM);
+			if(fade==0)Pause = 0;
 		}
 	}
 	
@@ -701,7 +771,6 @@ void renderer_loop(rendererObjectInstance *me) {
 	glCallList((u32 *)TableTop_bin);
 	glPopMatrix(1);
 
-	
 	//glPushMatrix();
 	//glRotatef(0,0.0f,1.0f,0.0f);
 	//glTranslatef(0.0f, -1.2f, 0.0f);
@@ -753,6 +822,12 @@ void Debugger_loop(DebuggerObjectInstance *me) {
 		DSGM_DrawText(DSGM_TOP, 20, 17, "%d",DegreesToRadians(rotation));
 		DSGM_DrawText(DSGM_TOP, 0,  18, "DSGM_view[DSGM_TOP].x");
 		DSGM_DrawText(DSGM_TOP, 20, 18, "%d",DSGM_view[DSGM_TOP].x);
+		DSGM_DrawText(DSGM_TOP, 0,  19, "stage");
+		DSGM_DrawText(DSGM_TOP, 20, 19, "%d",stage);
+		DSGM_DrawText(DSGM_TOP, 0,  20, "pause");
+		DSGM_DrawText(DSGM_TOP, 20, 20, "%d",Pause);
+		DSGM_DrawText(DSGM_TOP, 0,  21, "fade");
+		DSGM_DrawText(DSGM_TOP, 20, 21, "%d",fade);
 		}else{
 		//DSGM_ClearText(1);
 	}
