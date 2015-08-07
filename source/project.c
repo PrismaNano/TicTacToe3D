@@ -660,10 +660,10 @@ void renderer_create(rendererObjectInstance *me) {
 	//Randomize turn at start of game
 	switch (mode){
 		case VS_HMN:
-			DSGM_Random(P1_TURN, PC_TURN);
+			DSGM_Random(P2_TURN, P1_TURN);
 			break;
 		case VS_PC:
-			DSGM_Random(P2_TURN, P1_TURN);
+			DSGM_Random(P1_TURN, PC_TURN);
 			break;
 	}
 }
@@ -719,6 +719,18 @@ void renderer_loop(rendererObjectInstance *me) {
 		}
 	
 		if(Row_Win()) DSGM_DrawText(DSGM_TOP, 10, 5, "YOU WIN!");
+		
+		switch(turn){
+			case P1_TURN:
+				DSGM_DrawText(DSGM_TOP, 0, 1, "P1's Turn");
+				break;
+			case P2_TURN:
+				DSGM_DrawText(DSGM_TOP, 0, 1, "P2's Turn");
+				break;
+			case PC_TURN:
+				DSGM_DrawText(DSGM_TOP, 0, 1, "PC's Turn");
+				break;
+		}
 	
 		//Scroll panoramic backgroud
 		scroll = (rotation / 32) % 512;
@@ -833,6 +845,8 @@ void Debugger_loop(DebuggerObjectInstance *me) {
 		DSGM_DrawText(DSGM_TOP, 20, 20, "%d",Pause);
 		DSGM_DrawText(DSGM_TOP, 0,  21, "fade");
 		DSGM_DrawText(DSGM_TOP, 20, 21, "%d",fade);
+		DSGM_DrawText(DSGM_TOP, 0,  22, "turn");
+		DSGM_DrawText(DSGM_TOP, 20, 22, "%d",turn);
 		}else{
 		//DSGM_ClearText(1);
 	}
