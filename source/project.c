@@ -567,7 +567,7 @@ void DSGM_SetupRooms(int room) {
 	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_TOP][0], &DSGM_Objects[renderer], DSGM_TOP, 1, 0, 0);
 	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_TOP][1], &DSGM_Objects[Debugger], DSGM_TOP, 1, 0, 0);
 	
-	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_TOP][2], &DSGM_Objects[InfoBar_Obj],  DSGM_TOP, 3,
+	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_TOP][2], &DSGM_Objects[InfoBar_Obj],  DSGM_TOP, 2,
 		0, -4,
 		64, -4
 	);
@@ -660,16 +660,16 @@ void renderer_create(rendererObjectInstance *me) {
 	//Randomize turn at start of game
 	switch (mode){
 		case VS_HMN:
-			DSGM_Random(P2_TURN, P1_TURN);
+			turn = DSGM_Random(P2_TURN, P1_TURN);
 			break;
 		case VS_PC:
-			DSGM_Random(P1_TURN, PC_TURN);
+			turn = DSGM_Random(P1_TURN, PC_TURN);
 			break;
 	}
 }
 
 void renderer_loop(rendererObjectInstance *me) {
-
+	
 	if(!GamePaused){
 		//Switching between layers
 		if(DSGM_newpress.Stylus) {
@@ -811,6 +811,8 @@ void Debugger_loop(DebuggerObjectInstance *me) {
 		DSGM_ClearText(1);
 	
 		//Debugging
+		DSGM_DrawText(DSGM_TOP, 20, 3, "%d",mode);
+		DSGM_DrawText(DSGM_TOP, 0,  3, "mode");
 		DSGM_DrawText(DSGM_TOP, 20, 4, "%d",DSGM_stylus.x);
 		DSGM_DrawText(DSGM_TOP, 20, 5, "%d",DSGM_stylus.y);
 		DSGM_DrawText(DSGM_TOP, 0,  4, "DSGM_stylus.x");
