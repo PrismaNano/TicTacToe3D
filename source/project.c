@@ -1130,10 +1130,10 @@ void TextBar_loop(TextBarObjectInstance *me){
 				break;
 			case 2:
 				me->frame = 6;
-			break;
+				break;
 			case 3:
 				me->frame = 5;
-			break;
+				break;
 		}
 	}
 }
