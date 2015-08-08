@@ -567,7 +567,7 @@ void DSGM_SetupRooms(int room) {
 	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_TOP][0], &DSGM_Objects[renderer], DSGM_TOP, 1, 0, 0);
 	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_TOP][1], &DSGM_Objects[Debugger], DSGM_TOP, 1, 0, 0);
 	
-	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_TOP][2], &DSGM_Objects[InfoBar_Obj],  DSGM_TOP, 2,
+	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_TOP][2], &DSGM_Objects[InfoBar_Obj],  DSGM_TOP, 3,
 		0, -4,
 		64, -4
 	);
@@ -744,13 +744,15 @@ void renderer_loop(rendererObjectInstance *me) {
 	
 	//Pause menu
 	if(Pause==1){
-		if(stage==0)FadeOut(DSGM_BOTTOM);
+		if(stage==0){
+			FadeOut(DSGM_BOTTOM);
+			if(fade>-10)DSGM_SetBrightness(DSGM_TOP, fade);
+		}	
 		if(fade==-15)stage = 1;
 		if(stage==1){
 			bgHide(7);
 			touch = false;
 			GamePaused = true;
-			DSGM_SetBrightness(DSGM_TOP, -10);
 			DSGM_DrawText(DSGM_TOP, 0,  1, "Game Paused");
 			DSGM_DrawText(DSGM_BOTTOM, 10, 9, "Resume Game");
 			DSGM_DrawText(DSGM_BOTTOM, 11, 15, "Main Menu");
@@ -766,8 +768,8 @@ void renderer_loop(rendererObjectInstance *me) {
 			DSGM_ClearText(0);
 			DSGM_ClearText(1);
 			GamePaused = false;
-			DSGM_SetBrightness(DSGM_TOP, 0);
 			FadeIn(DSGM_BOTTOM);
+			if(fade>-10)DSGM_SetBrightness(DSGM_TOP, fade);
 			if(fade==0)Pause = 0;
 		}
 	}
@@ -1157,10 +1159,7 @@ void ZBar_loop(ZBarObjectInstance *me){
 }
 
 void InfoBar_create(InfoBarObjectInstance *me){	
-	me->priority = 1;
-}
 
-void InfoBar_loop(InfoBarObjectInstance *me){
 	switch(DSGM_GetObjectInstanceID(me)){
 		case 0:
 			me->frame = 2;
@@ -1169,4 +1168,8 @@ void InfoBar_loop(InfoBarObjectInstance *me){
 			me->frame = 1;
 			break;
 	}
+	me->priority = 1;	
+}
+
+void InfoBar_loop(InfoBarObjectInstance *me){
 }
