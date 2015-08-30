@@ -12,5 +12,4 @@ Building the project
 *  Clone the repo with `git clone git://github.com/PrismaNano/TickTackToe3D.git`, or [download the source as a ZIP archive](https://github.com/PrismaNano/TicTacToe3D/archive/master.zip)
 *  Run `make` on the directory (click `build.bat` if unsure)
 
-Try out the demo!
-https://github.com/PrismaNano/TicTacToe3D/blob/gh-pages/TicTacToe3D.nds?raw=true
+[Click here to try out the demo!](https://github.com/PrismaNano/TicTacToe3D/blob/gh-pages/TicTacToe3D.nds?raw=true)
