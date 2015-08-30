@@ -2,9 +2,6 @@
 
 ### Introducing the classic Tic Tac Toe 3D board game for DS!
 
-Try out the demo!
-https://github.com/PrismaNano/TicTacToe3D/blob/gh-pages/TicTacToe3D.nds?raw=true
-
 ![](https://raw.githubusercontent.com/PrismaNano/TicTacToe3D/gh-pages/Tic Tac Toe 3D Ad.png)
 ![](https://raw.githubusercontent.com/PrismaNano/TicTacToe3D/gh-pages/Screenshot.png)
 
@@ -14,3 +11,6 @@ Building the project
 *  Install [dsgmLib](https://github.com/CTurt/dsgmLib)
 *  Clone the repo with `git clone git://github.com/PrismaNano/TickTackToe3D.git`, or [download the source as a ZIP archive](https://github.com/PrismaNano/TicTacToe3D/archive/master.zip)
 *  Run `make` on the directory (click `build.bat` if unsure)
+
+Try out the demo!
+https://github.com/PrismaNano/TicTacToe3D/blob/gh-pages/TicTacToe3D.nds?raw=true
