@@ -19,9 +19,11 @@ int stage;
 int scroll;
 int turn;
 bool mode;
+int Color = 1;
 
-enum {P2_TURN, P1_TURN, PC_TURN};
 enum {VS_HMN, VS_PC};
+enum {P2_TURN, P1_TURN, PC_TURN};
+
 
 typedef enum {
 	NONE,
@@ -657,6 +659,8 @@ void renderer_create(rendererObjectInstance *me) {
 	
 	glMatrixMode(GL_MODELVIEW);
 	
+	//mode = VS_PC;
+	
 	//Randomize turn at start of game
 	switch (mode){
 		case VS_HMN:
@@ -952,10 +956,32 @@ void Piece_loop(PieceObjectInstance *me) {
 	if(DSGM_release.Stylus && PieceTouched) {
 		if(DSGM_StylusOverObjectInstance(me)) {
 			if(!Board[layer][me->bx][me->by]) {
-				if(DSGM_held.L) Board[layer][me->bx][me->by] = RED;
-				else Board[layer][me->bx][me->by] = BLUE;
+				Board[layer][me->bx][me->by] = Color;
 				
 				DSGM_CreateObjectInstance(DSGM_TOP, me->by, me->bx, &DSGM_Objects[Board[layer][me->bx][me->by] == RED ? Piece_Red : Piece_Blue]);
+				
+				switch(mode){
+					case VS_HMN:
+						if(turn==P1_TURN){
+							turn = P2_TURN;
+						}
+						else{
+							turn = P1_TURN;
+						}
+						break;
+					case VS_PC:
+						if(turn==P1_TURN){
+							turn = PC_TURN;
+						}
+						else{
+							turn = P1_TURN;
+						}
+						break;
+				}
+				
+				Color++;
+				
+				if(Color>2) Color = 1;
 				
 				PieceTouched = false;
 			}
@@ -1071,7 +1097,7 @@ void Arrow_create(ArrowObjectInstance *me) {
 void Arrow_loop(ArrowObjectInstance *me) {
 
 	if(!GamePaused){
-		if(PieceTouched) me->frame = 0;
+		if(PieceTouched || turn==PC_TURN) me->frame = 0;
 		else DSGM_AnimateObjectInstance(me, 1, 3, 10);
 	}
 	else{
@@ -1085,7 +1111,12 @@ void PieceTemp_create(PieceTempObjectInstance *me){
 void PieceTemp_loop(PieceTempObjectInstance *me){
 
 	if(!GamePaused){
-		me->frame = 1;
+		if(turn==P1_TURN || turn==P2_TURN){
+			me->frame = Color;
+		}
+		else {
+			me->frame = 0;
+		}
 	
 		if(DSGM_newpress.Stylus && DSGM_stylus.x>me->x+5 && DSGM_stylus.x<me->x+32-6&&DSGM_stylus.y>me->y+6&&DSGM_stylus.y<me->y+32-6){
 			PieceTouched = true;
