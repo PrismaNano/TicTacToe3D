@@ -20,7 +20,6 @@ int scroll;
 int turn;
 bool mode;
 int Color = 1;
-bool gameover;
 
 enum {VS_HMN, VS_PC};
 enum {P2_TURN, P1_TURN, PC_TURN};
