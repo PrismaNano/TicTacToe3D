@@ -20,6 +20,7 @@ int scroll;
 int turn;
 bool mode;
 int Color = 1;
+bool gameover;
 
 enum {VS_HMN, VS_PC};
 enum {P2_TURN, P1_TURN, PC_TURN};
@@ -33,15 +34,7 @@ typedef enum {
 
 color Board[3][3][3];
 
-typedef struct {
-	int ID;
-	float X, Y;
-	int Rotation;
-} ModelData;
-
-ModelData Model[10];
-
-bool Row_Win(void) {
+bool Row_Win_BLUE(void) {
 	if(
 		(Board[0][0][0] == BLUE &&
 		Board[1][1][1] == BLUE &&
@@ -107,6 +100,108 @@ bool Row_Win(void) {
 	}
 	
 	return false;
+}
+
+bool Row_Win_RED(void) {
+	if(
+		(Board[0][0][0] == RED &&
+		Board[1][1][1] == RED &&
+		Board[2][2][2] == RED) ||
+		
+		(Board[0][2][2] == RED &&
+		Board[1][1][1] == RED &&
+		Board[2][0][0] == RED) ||
+		
+		(Board[0][2][0] == RED &&
+		Board[1][1][1] == RED &&
+		Board[2][0][2] == RED) ||
+		
+		(Board[0][0][2] == RED &&
+		Board[1][1][1] == RED &&
+		Board[2][2][0] == RED)
+	) return true;
+	
+	int i, layer;
+	for(i = 0; i < 3; i++) {
+		if(
+			(Board[0][0][i] == RED &&
+			Board[1][1][i] == RED &&
+			Board[2][2][i] == RED) ||
+			
+			(Board[0][2][i] == RED &&
+			Board[1][1][i] == RED &&
+			Board[2][0][i] == RED) ||
+			
+			(Board[0][i][0] == RED &&
+			Board[1][i][1] == RED &&
+			Board[2][i][2] == RED) ||
+			
+			(Board[0][i][2] == RED &&
+			Board[1][i][1] == RED &&
+			Board[2][i][0] == RED)
+		) return true;
+		
+		for(layer = 0; layer < 3; layer++) {
+			if(
+				(Board[layer][0][i] == RED &&
+				Board[layer][1][i] == RED &&
+				Board[layer][2][i] == RED) ||
+				
+				(Board[layer][i][0] == RED &&
+				Board[layer][i][1] == RED &&
+				Board[layer][i][2] == RED) ||
+				
+				(Board[layer][0][0] == RED &&
+				Board[layer][1][1] == RED &&
+				Board[layer][2][2] == RED) ||
+				
+				(Board[layer][2][0] == RED &&
+				Board[layer][1][1] == RED &&
+				Board[layer][0][2] == RED) ||
+				
+				(Board[0][i][layer] == RED &&
+				Board[1][i][layer] == RED &&
+				Board[2][i][layer] == RED)
+			
+			) return true;
+		}
+	}
+	
+	return false;
+}
+
+bool GameOver(){
+
+		if(Row_Win_BLUE() || Row_Win_RED()){
+			return true;
+		}
+		return false;
+}
+
+void Switch_Turn(){
+		if(!GameOver()){
+			switch(mode){
+				case VS_HMN:
+					if(turn==P1_TURN){
+						turn = P2_TURN;
+					}
+					else{
+						turn = P1_TURN;
+					}
+					break;
+				case VS_PC:
+					if(turn==P1_TURN){
+						turn = PC_TURN;
+					}
+					else{
+						turn = P1_TURN;
+					}
+					break;
+			}
+		}
+		Color++;
+			
+		if(Color>2) Color = 1;
 }
 
 void DSGMGlDrawTri(){
@@ -566,9 +661,10 @@ void DSGM_SetupRooms(int room) {
 	
 	DSGM_SetupObjectGroups(&DSGM_Rooms[Room_1], DSGM_TOP, 3); //Don't forget to update number of object groups
 	
+	
 	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_TOP][0], &DSGM_Objects[renderer], DSGM_TOP, 1, 0, 0);
 	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_TOP][1], &DSGM_Objects[Debugger], DSGM_TOP, 1, 0, 0);
-	
+
 	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_TOP][2], &DSGM_Objects[InfoBar_Obj],  DSGM_TOP, 2,
 		0, -4,
 		64, -4
@@ -721,8 +817,20 @@ void renderer_loop(rendererObjectInstance *me) {
 				rotation = rotateboard - angle_2;
 			}
 		}
-	
-		if(Row_Win()) DSGM_DrawText(DSGM_TOP, 10, 5, "YOU WIN!");
+		
+		if(GameOver()){
+			switch(turn){
+				case P2_TURN:
+					DSGM_DrawText(DSGM_TOP, 10, 5, "Player 2 WINS!");
+					break;
+				case P1_TURN:
+					DSGM_DrawText(DSGM_TOP, 10, 5, "Player 1 WINS!");
+					break;
+				case PC_TURN:
+					DSGM_DrawText(DSGM_TOP, 10, 5, "YOU LOSE!");
+					break;
+			}
+		}
 		
 		switch(turn){
 			case P1_TURN:
@@ -882,6 +990,7 @@ void Piece_Blue_loop(PieceBlueObjectInstance *me) {
 	if(DSGM_newpress.Select) {
 		DSGM_ClearText(1);
 		reset_board();
+		DSGM_DeleteObjectInstance(me);
 	}
 }
 
@@ -907,6 +1016,7 @@ void Piece_Red_loop(PieceRedObjectInstance *me) {
 	if(DSGM_newpress.Select) {
 		DSGM_ClearText(1);
 		reset_board();
+		DSGM_DeleteObjectInstance(me);
 	}
 }
 
@@ -960,28 +1070,7 @@ void Piece_loop(PieceObjectInstance *me) {
 				
 				DSGM_CreateObjectInstance(DSGM_TOP, me->by, me->bx, &DSGM_Objects[Board[layer][me->bx][me->by] == RED ? Piece_Red : Piece_Blue]);
 				
-				switch(mode){
-					case VS_HMN:
-						if(turn==P1_TURN){
-							turn = P2_TURN;
-						}
-						else{
-							turn = P1_TURN;
-						}
-						break;
-					case VS_PC:
-						if(turn==P1_TURN){
-							turn = PC_TURN;
-						}
-						else{
-							turn = P1_TURN;
-						}
-						break;
-				}
-				
-				Color++;
-				
-				if(Color>2) Color = 1;
+				Switch_Turn();
 				
 				PieceTouched = false;
 			}
@@ -1097,7 +1186,7 @@ void Arrow_create(ArrowObjectInstance *me) {
 void Arrow_loop(ArrowObjectInstance *me) {
 
 	if(!GamePaused){
-		if(PieceTouched || turn==PC_TURN) me->frame = 0;
+		if(PieceTouched || turn==PC_TURN || GameOver()) me->frame = 0;
 		else DSGM_AnimateObjectInstance(me, 1, 3, 10);
 	}
 	else{
@@ -1111,7 +1200,7 @@ void PieceTemp_create(PieceTempObjectInstance *me){
 void PieceTemp_loop(PieceTempObjectInstance *me){
 
 	if(!GamePaused){
-		if(turn==P1_TURN || turn==P2_TURN){
+		if((turn==P1_TURN || turn==P2_TURN) && (!GameOver())){
 			me->frame = Color;
 		}
 		else {
@@ -1205,4 +1294,5 @@ void InfoBar_create(InfoBarObjectInstance *me){
 }
 
 void InfoBar_loop(InfoBarObjectInstance *me){
+
 }
