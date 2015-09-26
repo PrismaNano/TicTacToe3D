@@ -5,8 +5,8 @@
 #define DSGM_SOUND_COUNT (DSGM_SOUND_STREAM_COUNT + DSGM_SOUND_EFFECT_COUNT)
 #define DSGM_BACKGROUND_COUNT 5
 #define DSGM_PALETTE_COUNT 6
-#define DSGM_SPRITE_COUNT 6
-#define DSGM_OBJECT_COUNT 15
+#define DSGM_SPRITE_COUNT 60
+#define DSGM_OBJECT_COUNT 150
 #define DSGM_ROOM_COUNT 1
 
 // Include backgrounds, palettes and sprites to be loaded from RAM
