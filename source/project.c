@@ -20,6 +20,7 @@ int scroll;
 int turn;
 bool mode;
 int Color = 1;
+int PCLayer;
 
 enum {VS_HMN, VS_PC};
 enum {P2_TURN, P1_TURN, PC_TURN};
@@ -201,6 +202,40 @@ void Switch_Turn(){
 		Color++;
 			
 		if(Color>2) Color = 1;
+}
+
+void PC_Move(){
+		
+		u8 i;
+		
+		int X,Y;
+		
+		PCLayer = DSGM_Random(0, 2);
+		X = DSGM_Random(0, 2);
+		Y = DSGM_Random(0, 2);
+		
+		for(i=0;i<3;i++){
+			if(Board[0][0][0] == RED && Board[0][2][0]){
+				Board[0][1][0] = Color;
+				Switch_Turn();
+			}
+			else if(Board[0][0][0] == RED && Board[0][1][0]){
+				Board[0][2][0] = Color;
+				Switch_Turn();
+			}
+			else if(Board[i][1][0] == RED && Board[i][2][0]){
+				Board[i][0][0] = Color;
+				Switch_Turn();
+			}
+			else{
+				if(Board[PCLayer][X][Y] != BLUE && Board[PCLayer][X][Y] != RED){
+					
+					Board[PCLayer][X][Y] = Color;
+					DSGM_CreateObjectInstance(DSGM_TOP, Y, X, &DSGM_Objects[Board[PCLayer][X][Y] == RED ? Piece_Red : Piece_Blue]);
+					Switch_Turn();
+				}
+			}
+		}
 }
 
 void DSGMGlDrawTri(){
@@ -754,7 +789,7 @@ void renderer_create(rendererObjectInstance *me) {
 	
 	glMatrixMode(GL_MODELVIEW);
 	
-	//mode = VS_PC;
+	mode = VS_PC;
 	
 	//Randomize turn at start of game
 	switch (mode){
@@ -885,6 +920,12 @@ void renderer_loop(rendererObjectInstance *me) {
 		}
 	}
 	
+	if(!GameOver()){
+		if(turn == PC_TURN){
+			PC_Move();
+		}
+	}
+	
 	glPushMatrix();
 	
 	//Render board Models
@@ -969,7 +1010,12 @@ void Debugger_loop(DebuggerObjectInstance *me) {
 
 void Piece_Blue_create(PieceBlueObjectInstance *me) {
 	me->variables->x = (1 - me->x) * 0.65;
-	me->variables->y = 1 - layer;
+	if(turn!=PC_TURN){
+		me->variables->y = 1 - layer;
+		}
+		else{
+		me->variables->y = 1 - PCLayer;
+	}
 	me->variables->z = (1 - me->y) * -0.65;
 }
 
@@ -995,12 +1041,17 @@ void Piece_Blue_loop(PieceBlueObjectInstance *me) {
 
 void Piece_Red_create(PieceRedObjectInstance *me) {
 	me->variables->x = (1 - me->x) * 0.65;
-	me->variables->y = 1 - layer;
+	if(turn!=PC_TURN){
+		me->variables->y = 1 - layer;
+		}
+		else{
+		me->variables->y = 1 - PCLayer;
+	}
 	me->variables->z = (1 - me->y) * -0.65;
 }
 
 void Piece_Red_loop(PieceRedObjectInstance *me) {
-	// Draw the purple piece
+	// Draw the red piece
 	glPushMatrix();
 	glTranslatef(View_X, View_Y, z);
 	glRotateYi(rotation);
@@ -1204,6 +1255,7 @@ void PieceTemp_loop(PieceTempObjectInstance *me){
 		}
 		else {
 			me->frame = 0;
+			PieceTouched = false;
 		}
 	
 		if(DSGM_newpress.Stylus && DSGM_stylus.x>me->x+5 && DSGM_stylus.x<me->x+32-6&&DSGM_stylus.y>me->y+6&&DSGM_stylus.y<me->y+32-6){
