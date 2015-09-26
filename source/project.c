@@ -693,13 +693,14 @@ void DSGM_SetupRooms(int room) {
 	
 	DSGM_SetupViews(&DSGM_Rooms[Room_1]);
 	
-	DSGM_SetupObjectGroups(&DSGM_Rooms[Room_1], DSGM_TOP, 3); //Don't forget to update number of object groups
+	DSGM_SetupObjectGroups(&DSGM_Rooms[Room_1], DSGM_TOP, 4); //Don't forget to update number of object groups
 	
 	
 	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_TOP][0], &DSGM_Objects[renderer], DSGM_TOP, 1, 0, 0);
 	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_TOP][1], &DSGM_Objects[Debugger], DSGM_TOP, 1, 0, 0);
 
-	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_TOP][2], &DSGM_Objects[InfoBar_Obj],  DSGM_TOP, 2,
+	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_1].objectGroups[DSGM_TOP][2], &DSGM_Objects[InfoBar_Obj],  DSGM_TOP, 3,
+		0, -4,
 		0, -4,
 		64, -4
 	);
@@ -868,13 +869,13 @@ void renderer_loop(rendererObjectInstance *me) {
 		
 		switch(turn){
 			case P1_TURN:
-				DSGM_DrawText(DSGM_TOP, 0, 1, "P1's Turn");
+				DSGM_DrawText(DSGM_TOP, 1, 1, "P1's Turn");
 				break;
 			case P2_TURN:
-				DSGM_DrawText(DSGM_TOP, 0, 1, "P2's Turn");
+				DSGM_DrawText(DSGM_TOP, 1, 1, "P2's Turn");
 				break;
 			case PC_TURN:
-				DSGM_DrawText(DSGM_TOP, 0, 1, "PC's Turn");
+				DSGM_DrawText(DSGM_TOP, 1, 1, "PC's Turn");
 				break;
 		}
 	
@@ -899,7 +900,7 @@ void renderer_loop(rendererObjectInstance *me) {
 			bgHide(7);
 			touch = false;
 			GamePaused = true;
-			DSGM_DrawText(DSGM_TOP, 0,  1, "Game Paused");
+			DSGM_DrawText(DSGM_TOP, 1,  1, "Game Paused");
 			DSGM_DrawText(DSGM_BOTTOM, 10, 9, "Resume Game");
 			DSGM_DrawText(DSGM_BOTTOM, 11, 15, "Main Menu");
 			FadeIn(DSGM_BOTTOM);
@@ -1334,10 +1335,10 @@ void ZBar_loop(ZBarObjectInstance *me){
 void InfoBar_create(InfoBarObjectInstance *me){	
 
 	switch(DSGM_GetObjectInstanceID(me)){
-		case 0:
+		case 1:
 			me->frame = 2;
 			break;
-		case 1:
+		case 2:
 			me->frame = 1;
 			break;
 	}
