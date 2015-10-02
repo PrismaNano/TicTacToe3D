@@ -3,11 +3,11 @@
 #define DSGM_SOUND_STREAM_COUNT 0
 #define DSGM_SOUND_EFFECT_COUNT 0
 #define DSGM_SOUND_COUNT (DSGM_SOUND_STREAM_COUNT + DSGM_SOUND_EFFECT_COUNT)
-#define DSGM_BACKGROUND_COUNT 5
+#define DSGM_BACKGROUND_COUNT 6
 #define DSGM_PALETTE_COUNT 6
 #define DSGM_SPRITE_COUNT 6
-#define DSGM_OBJECT_COUNT 15
-#define DSGM_ROOM_COUNT 1
+#define DSGM_OBJECT_COUNT 16
+#define DSGM_ROOM_COUNT 2
 
 // Include backgrounds, palettes and sprites to be loaded from RAM
 
@@ -34,6 +34,7 @@ typedef enum {
 	RotBoard,
 	BGCoffee1,
 	Backdrop,
+	MainMenu,
 } DSGM_BackgroundNames;
 
 typedef enum {
@@ -69,6 +70,7 @@ typedef enum {
 	TextBar_Obj,
 	ZBar_Obj,
 	InfoBar_Obj,
+	MainMenu_Obj,
 } DSGM_ObjectNames;
 
 typedef struct {
@@ -146,6 +148,8 @@ typedef struct {
 typedef struct {
 	DSGM_ObjectInstanceBase;
 	struct {
+		int id;
+		int touch;
 	} *variables;
 } TextBarObjectInstance;
 
@@ -161,8 +165,15 @@ typedef struct {
 	} *variables;
 } InfoBarObjectInstance;
 
+typedef struct {
+	DSGM_ObjectInstanceBase;
+	struct {
+	} *variables;
+} MainMenuObjectInstance;
+
 typedef enum {
 	Room_1,
+	Room_2,
 } DSGM_RoomNames;
 
 extern DSGM_Sound DSGM_Sounds[DSGM_SOUND_COUNT];
@@ -216,3 +227,6 @@ void ZBar_loop(ZBarObjectInstance *me);
 
 void InfoBar_create(InfoBarObjectInstance *me);
 void InfoBar_loop(InfoBarObjectInstance *me);
+
+void MainMenu_create(MainMenuObjectInstance *me);
+void MainMenu_loop(MainMenuObjectInstance *me);
