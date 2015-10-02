@@ -339,6 +339,7 @@ DSGM_Background DSGM_Backgrounds[DSGM_BACKGROUND_COUNT] = {
 	DSGM_FORM_NITRO_BACKGROUND(RotBoard, BgSize_ER_256x256, BgType_ExRotation),
 	DSGM_FORM_NITRO_BACKGROUND(BGCoffee1, BgSize_T_256x256, BgType_Text8bpp),
 	DSGM_FORM_NITRO_BACKGROUND(BG1, BgSize_T_512x512, BgType_Text8bpp),
+	DSGM_FORM_NITRO_BACKGROUND(Logo, BgSize_T_256x256, BgType_Text8bpp),
 };
 
 DSGM_Palette DSGM_Palettes[DSGM_PALETTE_COUNT] = {
@@ -523,6 +524,19 @@ DSGM_Object DSGM_Objects[DSGM_OBJECT_COUNT] = {
 		
 		sizeof(*((InfoBarObjectInstance *)0)->variables)
 	},
+	
+	// Main menu
+	{
+		DSGM_NO_SPRITE,
+		(DSGM_Event)MainMenu_create,
+		(DSGM_Event)MainMenu_loop,
+		DSGM_NO_EVENT,
+		DSGM_NO_EVENT,
+		NULL, 0,
+		
+		sizeof(*((MainMenuObjectInstance *)0)->variables)
+	},
+	
 	// Object_Example
 	/*{
 		&DSGM_Sprites[Sprite],
@@ -538,7 +552,7 @@ DSGM_Object DSGM_Objects[DSGM_OBJECT_COUNT] = {
 };
 
 DSGM_Room DSGM_Rooms[DSGM_ROOM_COUNT] = {
-	// Room_1
+	// Room_1 - Tic Tac Toe 3D Game
 	{
 		// Backgrounds
 		{
@@ -546,7 +560,7 @@ DSGM_Room DSGM_Rooms[DSGM_ROOM_COUNT] = {
 			{
 				// Layer 0
 				{
-					DSGM_DEFAULT_FONT,			//Background
+					DSGM_DEFAULT_FONT,			// Background
 					DSGM_BOTTOM,				// Screen
 					0,							// Layer
 					false,						// Attached to view system
@@ -676,14 +690,154 @@ DSGM_Room DSGM_Rooms[DSGM_ROOM_COUNT] = {
 			0
 		}
 	},
+	
+	// Room_2 - Main Menu
+	{
+		// Backgrounds
+		{
+			// Bottom screen
+			{
+				// Layer 0
+				{
+					DSGM_DEFAULT_FONT,			// Background
+					DSGM_BOTTOM,				// Screen
+					0,							// Layer
+					false,						// Attached to view system
+					3,							// Map base
+					0,							// Tile base
+					0, 0, 0
+				},
+				
+				// Layer 1
+				{
+					DSGM_NO_BACKGROUND,			// Background
+					DSGM_BOTTOM,				// Screen
+					1,							// Layer
+					false,						// Attached to view system
+					0,							// Map base
+					0,							// Tile base
+					0, 0, 0
+				},
+				
+				// Layer 2
+				{
+					&DSGM_Backgrounds[BGCoffeeBottom],// Background
+					DSGM_BOTTOM,				// Screen
+					2,							// Layer
+					true,						// Attached to view system
+					4,							// Map base
+					1,							// Tile base
+					0, 0, 0
+				},
+				
+				// Layer 3
+				{
+					DSGM_NO_BACKGROUND,			// Background
+					DSGM_BOTTOM,				// Screen
+					0,							// Layer
+					true,						// Attached to view system
+					0,							// Map base
+					0,							// Tile base
+					0, 0, 0
+				},
+			},
+			
+			// Top screen
+			{
+				// Layer 0
+				{
+					DSGM_NO_BACKGROUND,			// Background
+					DSGM_TOP,					// Screen
+					0,							// Layer
+					false,						// Attached to view system
+					0,							// Map base
+					0,							// Tile base
+					0, 0, 0
+				},
+				
+				// Layer 1
+				{
+					DSGM_NO_BACKGROUND,			// Background
+					DSGM_TOP,					// Screen
+					1,							// Layer
+					false,						// Attached to view system
+					0,							// Map base
+					0,							// Tile base
+					0, 0, 0
+				},
+				
+				// Layer 2
+				{
+					&DSGM_Backgrounds[MainMenu],// Background
+					DSGM_TOP,					// Screen
+					2,							// Layer
+					true,						// Attached to view system
+					0,							// Map base
+					1,							// Tile base
+					0, 0, 0
+				},
+				
+				// Layer 3
+				{
+					DSGM_NO_BACKGROUND,			// Background
+					DSGM_TOP,					// Screen
+					3,							// Layer
+					true,						// Attached to view system
+					0,							// Map base
+					0,							// Tile base
+					0, 0, 0
+				},
+			}
+		},
+		
+		// Initial views
+		{
+			// Bottom screen
+			{
+				0, 0
+			},
+			
+			// Top screen
+			{
+				0, 0
+			}
+		},
+		
+		// Views
+		{
+			// Bottom screen
+			{
+				0, 0
+			},
+			
+			// Top screen
+			{
+				0, 0
+			}
+		},
+		
+		NULL,
+		
+		// Object groups are dynamic, so must be set up at run time, see DSGM_SetupRooms.
+		{
+			NULL,
+			NULL
+		},
+		{
+			0,
+			0
+		}
+	},
 };
 
 int DSGM_currentRoom = Room_1;
 
 void DSGM_SetupRooms(int room) {
+	
 	if(room != DSGM_ALL_ROOMS) {
 		switch(room) {
 			case Room_1: goto Room_1; break;
+			case Room_2: goto Room_2; break;
 		}
 	}
 	
@@ -751,6 +905,25 @@ void DSGM_SetupRooms(int room) {
 	);
 	
 	if(room != DSGM_ALL_ROOMS) return;
+	
+	Room_2:
+	DSGM_Debug("Room 2 reset\n");
+	DSGM_LeaveRoom(&DSGM_Rooms[Room_2]);
+	
+	DSGM_SetupViews(&DSGM_Rooms[Room_2]);
+	
+	DSGM_SetupObjectGroups(&DSGM_Rooms[Room_2], DSGM_TOP, 0);
+	
+	DSGM_SetupObjectGroups(&DSGM_Rooms[Room_2], DSGM_BOTTOM, 1);
+	
+	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_2].objectGroups[DSGM_BOTTOM][0], &DSGM_Objects[TextBar_Obj], DSGM_BOTTOM, 4,
+		64, 60,
+		128, 60,
+		64, 108,
+		128, 108
+	);
+	
+	if(room != DSGM_ALL_ROOMS) return;
 }
 
 void renderer_create(rendererObjectInstance *me) {
@@ -790,6 +963,7 @@ void renderer_create(rendererObjectInstance *me) {
 	
 	glMatrixMode(GL_MODELVIEW);
 	
+	//mode = VS_HMN;
 	mode = VS_PC;
 	
 	//Randomize turn at start of game
@@ -856,29 +1030,29 @@ void renderer_loop(rendererObjectInstance *me) {
 		if(GameOver()){
 			switch(turn){
 				case P2_TURN:
-					DSGM_DrawText(DSGM_TOP, 10, 5, "Player 2 WINS!");
+					DSGM_DrawText(DSGM_TOP, 1, 1, "Player 2 WINS!");
 					break;
 				case P1_TURN:
-					DSGM_DrawText(DSGM_TOP, 10, 5, "Player 1 WINS!");
+					DSGM_DrawText(DSGM_TOP, 1, 1, "Player 1 WINS!");
 					break;
 				case PC_TURN:
-					DSGM_DrawText(DSGM_TOP, 10, 5, "YOU LOSE!");
+					DSGM_DrawText(DSGM_TOP, 1, 1, "YOU LOSE!");
 					break;
 			}
 		}
-		
-		switch(turn){
-			case P1_TURN:
-				DSGM_DrawText(DSGM_TOP, 1, 1, "P1's Turn");
-				break;
-			case P2_TURN:
-				DSGM_DrawText(DSGM_TOP, 1, 1, "P2's Turn");
-				break;
-			case PC_TURN:
-				DSGM_DrawText(DSGM_TOP, 1, 1, "PC's Turn");
-				break;
+		else{
+			switch(turn){
+				case P1_TURN:
+					DSGM_DrawText(DSGM_TOP, 1, 1, "P1's Turn");
+					break;
+				case P2_TURN:
+					DSGM_DrawText(DSGM_TOP, 1, 1, "P2's Turn");
+					break;
+				case PC_TURN:
+					DSGM_DrawText(DSGM_TOP, 1, 1, "PC's Turn");
+					break;
+			}
 		}
-	
 		//Scroll panoramic backgroud
 		scroll = (rotation / 32) % 512;
 		DSGM_ScrollBackground(DSGM_TOP, 2, scroll, 0);
@@ -888,6 +1062,8 @@ void renderer_loop(rendererObjectInstance *me) {
 		if(Pause==0)Pause = 1;
 		if(Pause==2)Pause = 3;
 	}
+	
+	if(DSGM_newpress.L)DSGM_GotoNextRoom(true);
 	
 	//Pause menu
 	if(Pause==1){
@@ -900,7 +1076,7 @@ void renderer_loop(rendererObjectInstance *me) {
 			bgHide(7);
 			touch = false;
 			GamePaused = true;
-			DSGM_DrawText(DSGM_TOP, 1,  1, "Game Paused");
+			DSGM_DrawText(DSGM_TOP, 1,  1, "Game Paused   ");
 			DSGM_DrawText(DSGM_BOTTOM, 10, 9, "Resume Game");
 			DSGM_DrawText(DSGM_BOTTOM, 11, 15, "Main Menu");
 			FadeIn(DSGM_BOTTOM);
@@ -1286,14 +1462,16 @@ void PieceTemp_loop(PieceTempObjectInstance *me){
 
 void TextBar_create(TextBarObjectInstance *me){
 	me->priority = 1;
+	me->variables->id = DSGM_GetObjectInstanceID(me);
 }
 
 void TextBar_loop(TextBarObjectInstance *me){
+if(DSGM_newpress.L)DSGM_GotoNextRoom(true);
 	if(!GamePaused){
 		me->frame = 0;
 	}
 	else{
-		switch(DSGM_GetObjectInstanceID(me)){
+		switch(me->variables->id){
 			case 0:
 				me->frame = 6;
 				break;
@@ -1307,6 +1485,42 @@ void TextBar_loop(TextBarObjectInstance *me){
 				me->frame = 5;
 				break;
 		}
+		//Pause menu buttons
+		
+		if(DSGM_stylus.x>63&&DSGM_stylus.x<192&&DSGM_stylus.y>61&&DSGM_stylus.y<90){
+			if(DSGM_newpress.Stylus){
+				me->variables->touch = 1;
+			}
+			if(me->variables->touch==1){
+				if(me->variables->id==0) me->frame = 8;
+				if(me->variables->id==1) me->frame = 7;
+			}
+			if(DSGM_release.Stylus){
+				if(me->variables->touch==1){
+					if(DSGM_currentRoom==Room_2){
+						DSGM_SwitchRoom(Room_1, false); //Resume game
+					}
+					else{
+						Pause = 3;
+					}
+				}
+			}
+		}
+		if(DSGM_stylus.x>63&&DSGM_stylus.x<192&&DSGM_stylus.y>=109&&DSGM_stylus.y<=138){
+			if(DSGM_newpress.Stylus){
+				me->variables->touch = 2;
+			}
+			if(me->variables->touch==2){
+				if(me->variables->id==2) me->frame = 8;
+				if(me->variables->id==3) me->frame = 7;
+			}
+			if(DSGM_release.Stylus){
+				if(me->variables->touch==2){
+					DSGM_SwitchRoom(Room_2, false); //Go to the main menu
+				}
+			}
+		}
+		if(!DSGM_held.Stylus)me->variables->touch = 0;
 	}
 }
 
@@ -1347,4 +1561,12 @@ void InfoBar_create(InfoBarObjectInstance *me){
 
 void InfoBar_loop(InfoBarObjectInstance *me){
 
+}
+
+void MainMenu_create(MainMenuObjectInstance *me){	
+
+}
+
+void MainMenu_loop(MainMenuObjectInstance *me){
+	if(DSGM_newpress.Stylus)DSGM_SwitchRoom(Room_1, false);
 }
