@@ -6,7 +6,7 @@
 #define DSGM_BACKGROUND_COUNT 6
 #define DSGM_PALETTE_COUNT 6
 #define DSGM_SPRITE_COUNT 6
-#define DSGM_OBJECT_COUNT 16
+#define DSGM_OBJECT_COUNT 17
 #define DSGM_ROOM_COUNT 2
 
 // Include backgrounds, palettes and sprites to be loaded from RAM
@@ -71,6 +71,7 @@ typedef enum {
 	ZBar_Obj,
 	InfoBar_Obj,
 	MainMenu_Obj,
+	MenuButton_Obj,
 } DSGM_ObjectNames;
 
 typedef struct {
@@ -171,6 +172,14 @@ typedef struct {
 	} *variables;
 } MainMenuObjectInstance;
 
+typedef struct {
+	DSGM_ObjectInstanceBase;
+	struct {
+		int id;
+		int touch;
+	} *variables;
+} MenuButtonObjectInstance;
+
 typedef enum {
 	Room_1,
 	Room_2,
@@ -201,6 +210,7 @@ void Piece_Red_loop(PieceRedObjectInstance *me);
 void Piece_create(PieceObjectInstance *me);
 void Piece_loop(PieceObjectInstance *me);
 
+void Slider_create(SliderObjectInstance *me);
 void Slider_loop(SliderObjectInstance *me);
 
 void Layer_1_create(Layer1ObjectInstance *me);
@@ -230,3 +240,6 @@ void InfoBar_loop(InfoBarObjectInstance *me);
 
 void MainMenu_create(MainMenuObjectInstance *me);
 void MainMenu_loop(MainMenuObjectInstance *me);
+
+void MenuButton_create(MenuButtonObjectInstance *me);
+void MenuButton_loop(MenuButtonObjectInstance *me);
