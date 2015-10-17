@@ -21,6 +21,7 @@ int turn;
 bool mode;
 int Color = 1;
 int PCLayer;
+bool Loaded;
 
 enum {VS_HMN, VS_PC};
 enum {P2_TURN, P1_TURN, PC_TURN};
@@ -253,17 +254,40 @@ void DSGMGlDrawTri(){
 
 }
 
-void Draw_Triangle(float x, float y, float z){
+void Draw_Triangle2(){
 glColor3f(1, 1, 1);
-	//glBegin(GL_TRIANGLES);							// Start Drawing A Triangle
-		glColor3f(1.0f,0.0f,0.0f);
-		//glColor3f(1.0f,0.0f,0.0f);					// Set Top Point Of Triangle To Red
-		glVertex3f( 0.0f, 1.0f, 0.0f);				// First Point Of The Triangle
-		//glColor3f(0.0f,1.0f,0.0f);					// Set Left Point Of Triangle To Green
-		glVertex3f(-1.0f,-1.0f, 0.0f);				// Second Point Of The Triangle
-		//glColor3f(0.0f,0.0f,1.0f);					// Set Right Point Of Triangle To Blue
-		glVertex3f( 1.0f,-1.0f, 0.0f);				// Third Point Of The Triangle
-	//glEnd();
+	glBegin(GL_TRIANGLES);					// Start Drawing A Triangle
+		glColor3f(0.25f,0.0f,0.0f);
+		glColor3f(1.0f,0.0f,0.0f);			// Set Top Point Of Triangle To Red
+		glVertex3f(0.0f, 0.25f, 0.0f);		// First Point Of The Triangle
+		glColor3f(0.0f,1.0f,0.0f);			// Set Left Point Of Triangle To Green
+		glVertex3f(-0.25f,-0.25f, 0.0f);	// Second Point Of The Triangle
+		glColor3f(0.0f,0.0f,0.05f);			// Set Right Point Of Triangle To Blue
+		glVertex3f(0.25f,-0.25f, 0.0f);	// Third Point Of The Triangle
+	glEnd();
+}
+
+void Draw_Triangle(){
+glColor3f(1, 1, 1);
+	glBegin(GL_TRIANGLES);					// Start Drawing A Triangle
+		glColor3f(0.25f,0.0f,0.0f);
+		glColor3f(1.0f,0.0f,0.0f);			// Set Top Point Of Triangle To Red
+		glVertex3f(0.0f, 0.25f, 0.0f);		// First Point Of The Triangle
+		glColor3f(0.0f,1.0f,0.0f);			// Set Left Point Of Triangle To Green
+		glVertex3f(-0.25f,-0.25f, 0.0f);	// Second Point Of The Triangle
+		glColor3f(0.0f,0.0f,0.05f);			// Set Right Point Of Triangle To Blue
+		glVertex3f(0.25f,-0.25f, 0.0f);	// Third Point Of The Triangle
+	glEnd();
+}
+
+void Draw_Triangle_1(float x, float y, float z){
+
+	glPushMatrix();
+	glTranslatef(x, y, z);
+	
+	Draw_Triangle();
+	
+	glPopMatrix(1);
 }
 
 void FadeIn(bool screen){
@@ -271,9 +295,21 @@ void FadeIn(bool screen){
 	DSGM_SetBrightness(screen, fade);
 }
 
+void FadeInDual(){
+	if(fade < 0)fade ++;
+	DSGM_SetBrightness(DSGM_TOP, fade);
+	DSGM_SetBrightness(DSGM_BOTTOM, fade);
+}
+
 void FadeOut(bool screen){
 	if(fade > -16)fade--;
 	DSGM_SetBrightness(screen, fade);
+}
+
+void FadeOutDual(){
+	if(fade > -16)fade--;
+	DSGM_SetBrightness(DSGM_TOP, fade);
+	DSGM_SetBrightness(DSGM_BOTTOM, fade);
 }
 
 void FadeInTop(bool screen){
@@ -423,8 +459,8 @@ DSGM_Object DSGM_Objects[DSGM_OBJECT_COUNT] = {
 	//Slider
 	{
 		&DSGM_Sprites[Slider_Spr],
-		DSGM_NO_EVENT,
-		(DSGM_Event)Slider_loop,	
+		(DSGM_Event)Slider_create,
+		(DSGM_Event)Slider_loop,
 		DSGM_NO_EVENT,
 		DSGM_NO_EVENT,
 		NULL, 0,
@@ -535,6 +571,18 @@ DSGM_Object DSGM_Objects[DSGM_OBJECT_COUNT] = {
 		NULL, 0,
 		
 		sizeof(*((MainMenuObjectInstance *)0)->variables)
+	},
+	
+	// menu button
+	{
+		&DSGM_Sprites[TextBar_Spr],
+		(DSGM_Event)MenuButton_create,
+		(DSGM_Event)MenuButton_loop,
+		DSGM_NO_EVENT,
+		DSGM_NO_EVENT,
+		NULL, 0,
+		
+		sizeof(*((MenuButtonObjectInstance *)0)->variables)
 	},
 	
 	// Object_Example
@@ -699,11 +747,11 @@ DSGM_Room DSGM_Rooms[DSGM_ROOM_COUNT] = {
 			{
 				// Layer 0
 				{
-					DSGM_DEFAULT_FONT,			// Background
+					DSGM_NO_BACKGROUND,			// Background
 					DSGM_BOTTOM,				// Screen
 					0,							// Layer
 					false,						// Attached to view system
-					3,							// Map base
+					0,							// Map base
 					0,							// Tile base
 					0, 0, 0
 				},
@@ -721,23 +769,23 @@ DSGM_Room DSGM_Rooms[DSGM_ROOM_COUNT] = {
 				
 				// Layer 2
 				{
-					&DSGM_Backgrounds[BGCoffeeBottom],// Background
+					DSGM_DEFAULT_FONT,			// Background
 					DSGM_BOTTOM,				// Screen
 					2,							// Layer
 					true,						// Attached to view system
-					4,							// Map base
-					1,							// Tile base
+					3,							// Map base
+					0,							// Tile base
 					0, 0, 0
 				},
 				
 				// Layer 3
 				{
-					DSGM_NO_BACKGROUND,			// Background
+					&DSGM_Backgrounds[BGCoffeeBottom],			// Background
 					DSGM_BOTTOM,				// Screen
 					0,							// Layer
 					true,						// Attached to view system
-					0,							// Map base
-					0,							// Tile base
+					4,							// Map base
+					1,							// Tile base
 					0, 0, 0
 				},
 			},
@@ -772,18 +820,18 @@ DSGM_Room DSGM_Rooms[DSGM_ROOM_COUNT] = {
 					DSGM_TOP,					// Screen
 					2,							// Layer
 					true,						// Attached to view system
-					0,							// Map base
+					4,							// Map base
 					1,							// Tile base
 					0, 0, 0
 				},
 				
 				// Layer 3
 				{
-					DSGM_NO_BACKGROUND,			// Background
+					DSGM_DEFAULT_FONT,			// Background
 					DSGM_TOP,					// Screen
 					3,							// Layer
 					true,						// Attached to view system
-					0,							// Map base
+					3,							// Map base
 					0,							// Tile base
 					0, 0, 0
 				},
@@ -912,11 +960,15 @@ void DSGM_SetupRooms(int room) {
 	
 	DSGM_SetupViews(&DSGM_Rooms[Room_2]);
 	
-	DSGM_SetupObjectGroups(&DSGM_Rooms[Room_2], DSGM_TOP, 0);
+	DSGM_SetupObjectGroups(&DSGM_Rooms[Room_2], DSGM_TOP, 1);
 	
-	DSGM_SetupObjectGroups(&DSGM_Rooms[Room_2], DSGM_BOTTOM, 1);
+	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_2].objectGroups[DSGM_TOP][1], &DSGM_Objects[Debugger], DSGM_TOP, 1, 0, 0);
+
+	DSGM_SetupObjectGroups(&DSGM_Rooms[Room_2], DSGM_BOTTOM, 3);
 	
-	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_2].objectGroups[DSGM_BOTTOM][0], &DSGM_Objects[TextBar_Obj], DSGM_BOTTOM, 4,
+	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_2].objectGroups[DSGM_BOTTOM][0], &DSGM_Objects[MainMenu_Obj], DSGM_BOTTOM, 1, 0, 0);
+	
+	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_2].objectGroups[DSGM_BOTTOM][1], &DSGM_Objects[MenuButton_Obj], DSGM_BOTTOM, 4,
 		64, 60,
 		128, 60,
 		64, 108,
@@ -931,11 +983,15 @@ void renderer_create(rendererObjectInstance *me) {
 	DSGM_InitStandard3D(); 
 	
 	//Loading Textures
-	DSGM_LoadTexture(&BoardTexture);
-	DSGM_LoadTexture(&TableTopTexture);
-	DSGM_LoadTexture(&PieceBlueTexture);
-	DSGM_LoadTexture(&PieceRedTexture);
-	DSGM_LoadTexture(&ArrowTexture);
+
+	if(!Loaded){
+		DSGM_LoadTexture(&BoardTexture);
+		DSGM_LoadTexture(&TableTopTexture);
+		DSGM_LoadTexture(&PieceBlueTexture);
+		DSGM_LoadTexture(&PieceRedTexture);
+		DSGM_LoadTexture(&ArrowTexture);
+		Loaded = true;
+	}
 	
 	//gluLookAt(
     //    eye_x, eye_y, eye_z,
@@ -1058,12 +1114,15 @@ void renderer_loop(rendererObjectInstance *me) {
 		DSGM_ScrollBackground(DSGM_TOP, 2, scroll, 0);
 	}
 	
+	if(Pause==5){
+		FadeInDual();
+		if(fade==0)Pause = 0;
+	}
+	
 	if(DSGM_newpress.Start){
 		if(Pause==0)Pause = 1;
 		if(Pause==2)Pause = 3;
 	}
-	
-	if(DSGM_newpress.L)DSGM_GotoNextRoom(true);
 	
 	//Pause menu
 	if(Pause==1){
@@ -1094,6 +1153,24 @@ void renderer_loop(rendererObjectInstance *me) {
 			FadeIn(DSGM_BOTTOM);
 			if(fade>-10)DSGM_SetBrightness(DSGM_TOP, fade);
 			if(fade==0)Pause = 0;
+		}
+	}
+	if(Pause==4){
+		FadeOut(DSGM_BOTTOM);
+		if(fade<-10)DSGM_SetBrightness(DSGM_TOP, fade);
+		if(fade==-15){
+			rotation = 0;
+			rotateboard = 0;
+			RotVelocity = 0;
+			angle_1 = 0;
+			angle_2 = 0;
+			View_X = 2.142857;
+			View_Y = -1;
+			layer = 1;
+			Pause = 0;
+			stage = 0;
+			GamePaused = false;
+			DSGM_SwitchRoom(Room_2, false); //Go to the main menu
 		}
 	}
 	
@@ -1232,6 +1309,8 @@ void Piece_Red_loop(PieceRedObjectInstance *me) {
 	glPushMatrix();
 	glTranslatef(View_X, View_Y, z);
 	glRotateYi(rotation);
+
+	Draw_Triangle_1(me->variables->x, me->variables->y, me->variables->z);	
 	
 	// Apply transformation after rotation, and the rotation will correct the position
 	glTranslatef(me->variables->x,me->variables->y ,me->variables->z);
@@ -1248,28 +1327,30 @@ void Piece_Red_loop(PieceRedObjectInstance *me) {
 }
 
 void Piece_create(PieceObjectInstance *me) {
-	me->variables->relativeRotation = DSGM_GetAngle(128, 96, me->x + 16, me->y + 16);
-	me->variables->distance = DSGM_Distance(128, 96, me->x + 16, me->y + 16);
-	me->bitshift = 12;
+	if(!Loaded){
+		me->variables->relativeRotation = DSGM_GetAngle(128, 96, me->x + 16, me->y + 16);
+		me->variables->distance = DSGM_Distance(128, 96, me->x + 16, me->y + 16);
+		me->bitshift = 12;
 	
-	struct {
-		unsigned char x : 4;
-		unsigned char y : 4;
-	} positions[] = {
-		{ 0, 0 },
-		{ 1, 0 },
-		{ 2, 0 },
-		{ 0, 1 },
-		{ 1, 1 },
-		{ 2, 1 },
-		{ 0, 2 },
-		{ 1, 2 },
-		{ 2, 2 },
-	};
-	
-	int id = DSGM_GetObjectInstanceID(me);
-	me->bx = positions[id].x;
-	me->by = positions[id].y;
+		struct {
+			unsigned char x : 4;
+			unsigned char y : 4;
+		} positions[] = {
+			{ 0, 0 },
+			{ 1, 0 },
+			{ 2, 0 },
+			{ 0, 1 },
+			{ 1, 1 },
+			{ 2, 1 },
+			{ 0, 2 },
+			{ 1, 2 },
+			{ 2, 2 },
+		};
+		
+		int id = DSGM_GetObjectInstanceID(me);
+		me->bx = positions[id].x;
+		me->by = positions[id].y;
+	}
 }
 
 void Piece_loop(PieceObjectInstance *me) {
@@ -1303,6 +1384,10 @@ void Piece_loop(PieceObjectInstance *me) {
 			}
 		}
 	}
+}
+
+void Slider_create(SliderObjectInstance *me) {
+	me->y = 80;
 }
 
 void Slider_loop(SliderObjectInstance *me) {
@@ -1466,7 +1551,6 @@ void TextBar_create(TextBarObjectInstance *me){
 }
 
 void TextBar_loop(TextBarObjectInstance *me){
-if(DSGM_newpress.L)DSGM_GotoNextRoom(true);
 	if(!GamePaused){
 		me->frame = 0;
 	}
@@ -1488,7 +1572,7 @@ if(DSGM_newpress.L)DSGM_GotoNextRoom(true);
 		//Pause menu buttons
 		
 		if(DSGM_stylus.x>63&&DSGM_stylus.x<192&&DSGM_stylus.y>61&&DSGM_stylus.y<90){
-			if(DSGM_newpress.Stylus){
+			if(DSGM_newpress.Stylus&&Pause==2){
 				me->variables->touch = 1;
 			}
 			if(me->variables->touch==1){
@@ -1497,17 +1581,12 @@ if(DSGM_newpress.L)DSGM_GotoNextRoom(true);
 			}
 			if(DSGM_release.Stylus){
 				if(me->variables->touch==1){
-					if(DSGM_currentRoom==Room_2){
-						DSGM_SwitchRoom(Room_1, false); //Resume game
-					}
-					else{
-						Pause = 3;
-					}
+					Pause = 3; //Resume game
 				}
 			}
 		}
 		if(DSGM_stylus.x>63&&DSGM_stylus.x<192&&DSGM_stylus.y>=109&&DSGM_stylus.y<=138){
-			if(DSGM_newpress.Stylus){
+			if(DSGM_newpress.Stylus&&Pause==2){
 				me->variables->touch = 2;
 			}
 			if(me->variables->touch==2){
@@ -1516,7 +1595,7 @@ if(DSGM_newpress.L)DSGM_GotoNextRoom(true);
 			}
 			if(DSGM_release.Stylus){
 				if(me->variables->touch==2){
-					DSGM_SwitchRoom(Room_2, false); //Go to the main menu
+					Pause = 4; //Main menu
 				}
 			}
 		}
@@ -1538,7 +1617,7 @@ void ZBar_loop(ZBarObjectInstance *me){
 				break;
 			case 2:
 				me->frame = 3;
-			break;
+				break;
 		}
 	}
 	else{
@@ -1564,9 +1643,90 @@ void InfoBar_loop(InfoBarObjectInstance *me){
 }
 
 void MainMenu_create(MainMenuObjectInstance *me){	
-
+	//Arranging the layers in a different order	
+	DSGM_SetLayerPriority(DSGM_BOTTOM, 3, 2);
+	DSGM_SetLayerPriority(DSGM_BOTTOM, 1, 3);
 }
 
 void MainMenu_loop(MainMenuObjectInstance *me){
-	if(DSGM_newpress.Stylus)DSGM_SwitchRoom(Room_1, false);
+	FadeInDual();
+}
+
+void MenuButton_create(MenuButtonObjectInstance *me){
+	me->priority = 1;	
+	me->variables->id = DSGM_GetObjectInstanceID(me);
+	
+	DSGM_DrawText(DSGM_BOTTOM, 12, 9, "VS Human");
+	DSGM_DrawText(DSGM_BOTTOM, 10, 15, "VS Computer");
+	
+	DSGM_DrawText(DSGM_BOTTOM, 1, 23, "Copyright Backyard Games 2015");	
+}
+
+//Remember you arranged the backgrounds in a different order
+
+void MenuButton_loop(MenuButtonObjectInstance *me){
+	switch(me->variables->id){
+		case 0:
+			me->frame = 6;
+			break;
+		case 1:
+			me->frame = 5;
+			break;
+		case 2:
+			me->frame = 6;
+			break;
+		case 3:
+			me->frame = 5;
+			break;
+	}
+	
+	if(DSGM_stylus.x>63&&DSGM_stylus.x<192&&DSGM_stylus.y>61&&DSGM_stylus.y<90){
+		if(DSGM_newpress.Stylus){
+			me->variables->touch = 1;
+		}
+		if(me->variables->touch==1){
+			if(me->variables->id==0) me->frame = 8;
+			if(me->variables->id==1) me->frame = 7;
+		}
+		if(DSGM_release.Stylus){
+			if(me->variables->touch==1){
+				Pause = 1;
+			}
+		}
+	}
+	
+	if(DSGM_stylus.x>63&&DSGM_stylus.x<192&&DSGM_stylus.y>=109&&DSGM_stylus.y<=138){
+		if(DSGM_newpress.Stylus){
+			me->variables->touch = 2;
+		}
+		if(me->variables->touch==2){
+			if(me->variables->id==2) me->frame = 8;
+			if(me->variables->id==3) me->frame = 7;
+		}
+		if(DSGM_release.Stylus){
+			if(me->variables->touch==2){
+				Pause = 2;
+			}
+		}
+	}
+	
+	if(Pause==1){
+		FadeOutDual();
+		if(fade<-10)DSGM_SetBrightness(DSGM_TOP, fade);
+		if(fade==-15){
+			Pause = 5;
+			DSGM_SwitchRoom(Room_1, false); //Play against computer
+		}
+	}
+	
+	if(Pause==2){
+		FadeOutDual();
+		if(fade<-10)DSGM_SetBrightness(DSGM_TOP, fade);
+		if(fade==-15){
+			Pause = 5;
+			DSGM_SwitchRoom(Room_1, false); //Play against human
+		}
+	}
+	
+	if(!DSGM_held.Stylus)me->variables->touch = 0;
 }
