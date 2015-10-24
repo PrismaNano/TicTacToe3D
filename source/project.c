@@ -879,7 +879,7 @@ DSGM_Room DSGM_Rooms[DSGM_ROOM_COUNT] = {
 	},
 };
 
-int DSGM_currentRoom = Room_1;
+int DSGM_currentRoom = Room_2;
 
 void DSGM_SetupRooms(int room) {
 	
@@ -1017,9 +1017,6 @@ void renderer_create(rendererObjectInstance *me) {
 	DSGM_SetRotationCenter(DSGM_BOTTOM, 128, 96);
 	
 	glMatrixMode(GL_MODELVIEW);
-	
-	//mode = VS_HMN;
-	mode = VS_PC;
 	
 	//Reset timer
 	frames = 0;
@@ -1714,7 +1711,8 @@ void MenuButton_loop(MenuButtonObjectInstance *me){
 		if(fade<-10)DSGM_SetBrightness(DSGM_TOP, fade);
 		if(fade==-15){
 			Pause = 5;
-			DSGM_SwitchRoom(Room_1, false); //Play against computer
+			mode = VS_HMN;
+			DSGM_SwitchRoom(Room_1, false); //Play against human
 		}
 	}
 	
@@ -1723,7 +1721,8 @@ void MenuButton_loop(MenuButtonObjectInstance *me){
 		if(fade<-10)DSGM_SetBrightness(DSGM_TOP, fade);
 		if(fade==-15){
 			Pause = 5;
-			DSGM_SwitchRoom(Room_1, false); //Play against human
+			mode = VS_PC;
+			DSGM_SwitchRoom(Room_1, false); //Play against computer
 		}
 	}
 	
