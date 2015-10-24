@@ -1654,8 +1654,6 @@ void MenuButton_create(MenuButtonObjectInstance *me){
 	
 	DSGM_DrawText(DSGM_BOTTOM, 12, 9, "VS Human");
 	DSGM_DrawText(DSGM_BOTTOM, 10, 15, "VS Computer");
-	
-	DSGM_DrawText(DSGM_BOTTOM, 1, 23, "Copyright Backyard Games 2015");	
 }
 
 //Remember you arranged the backgrounds in a different order
