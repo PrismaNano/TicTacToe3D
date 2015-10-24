@@ -227,7 +227,6 @@ void Arrow_loop(ArrowObjectInstance *me);
 
 void PieceTemp_create(PieceTempObjectInstance *me);
 void PieceTemp_loop(PieceTempObjectInstance *me);
-void PieceTemp_loop(PieceTempObjectInstance *me);
 
 void TextBar_create(TextBarObjectInstance *me);
 void TextBar_loop(TextBarObjectInstance *me);

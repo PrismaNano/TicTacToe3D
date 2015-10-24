@@ -22,6 +22,7 @@ bool mode;
 int Color = 1;
 int PCLayer;
 bool Loaded;
+int frames;
 
 enum {VS_HMN, VS_PC};
 enum {P2_TURN, P1_TURN, PC_TURN};
@@ -315,7 +316,7 @@ void FadeOutDual(){
 void FadeInTop(bool screen){
 	int i;
 
-	for(i=-16;i<1;i++){
+	for(i=-16;i<0;i++){
 		DSGM_SetBrightness(screen, i);
 		swiWaitForVBlank();
 	}
@@ -827,11 +828,11 @@ DSGM_Room DSGM_Rooms[DSGM_ROOM_COUNT] = {
 				
 				// Layer 3
 				{
-					DSGM_DEFAULT_FONT,			// Background
+					DSGM_NO_BACKGROUND,			// Background
 					DSGM_TOP,					// Screen
 					3,							// Layer
 					true,						// Attached to view system
-					3,							// Map base
+					0,							// Map base
 					0,							// Tile base
 					0, 0, 0
 				},
@@ -960,9 +961,7 @@ void DSGM_SetupRooms(int room) {
 	
 	DSGM_SetupViews(&DSGM_Rooms[Room_2]);
 	
-	DSGM_SetupObjectGroups(&DSGM_Rooms[Room_2], DSGM_TOP, 1);
-	
-	DSGM_SetupObjectInstances(&DSGM_Rooms[Room_2].objectGroups[DSGM_TOP][1], &DSGM_Objects[Debugger], DSGM_TOP, 1, 0, 0);
+	DSGM_SetupObjectGroups(&DSGM_Rooms[Room_2], DSGM_TOP, 0);
 
 	DSGM_SetupObjectGroups(&DSGM_Rooms[Room_2], DSGM_BOTTOM, 3);
 	
@@ -1022,6 +1021,9 @@ void renderer_create(rendererObjectInstance *me) {
 	//mode = VS_HMN;
 	mode = VS_PC;
 	
+	//Reset timer
+	frames = 0;
+	
 	//Randomize turn at start of game
 	switch (mode){
 		case VS_HMN:
@@ -1034,6 +1036,8 @@ void renderer_create(rendererObjectInstance *me) {
 }
 
 void renderer_loop(rendererObjectInstance *me) {
+
+	frames++;
 	
 	if(!GamePaused){
 		//Switching between layers
@@ -1114,7 +1118,7 @@ void renderer_loop(rendererObjectInstance *me) {
 		DSGM_ScrollBackground(DSGM_TOP, 2, scroll, 0);
 	}
 	
-	if(Pause==5){
+	if(Pause==5&&frames>30){
 		FadeInDual();
 		if(fade==0)Pause = 0;
 	}
@@ -1130,7 +1134,7 @@ void renderer_loop(rendererObjectInstance *me) {
 			FadeOut(DSGM_BOTTOM);
 			if(fade>-10)DSGM_SetBrightness(DSGM_TOP, fade);
 		}	
-		if(fade==-15)stage = 1;
+		if(fade==-16)stage = 1;
 		if(stage==1){
 			bgHide(7);
 			touch = false;
@@ -1144,7 +1148,7 @@ void renderer_loop(rendererObjectInstance *me) {
 	}
 	if(Pause==3){
 		if(stage==1)FadeOut(DSGM_BOTTOM);
-		if(fade==-15)stage = 0;
+		if(fade==-16)stage = 0;
 		if(stage==0){
 			bgShow(7);
 			DSGM_ClearText(0);
@@ -1158,7 +1162,7 @@ void renderer_loop(rendererObjectInstance *me) {
 	if(Pause==4){
 		FadeOut(DSGM_BOTTOM);
 		if(fade<-10)DSGM_SetBrightness(DSGM_TOP, fade);
-		if(fade==-15){
+		if(fade==-16){
 			rotation = 0;
 			rotateboard = 0;
 			RotVelocity = 0;
@@ -1169,6 +1173,7 @@ void renderer_loop(rendererObjectInstance *me) {
 			layer = 1;
 			Pause = 0;
 			stage = 0;
+			reset_board();
 			GamePaused = false;
 			DSGM_SwitchRoom(Room_2, false); //Go to the main menu
 		}
@@ -1197,12 +1202,6 @@ void renderer_loop(rendererObjectInstance *me) {
 	glTranslatef(0.0f, -1.2f, 0.0f);
 	glCallList((u32 *)TableTop_bin);
 	glPopMatrix(1);
-
-	//glPushMatrix();
-	//glRotatef(0,0.0f,1.0f,0.0f);
-	//glTranslatef(0.0f, -1.2f, 0.0f);
-	//DrawTriange();
-	//glPopMatrix(1);
 	
 	glPopMatrix(1);
 }
@@ -1310,7 +1309,7 @@ void Piece_Red_loop(PieceRedObjectInstance *me) {
 	glTranslatef(View_X, View_Y, z);
 	glRotateYi(rotation);
 
-	Draw_Triangle_1(me->variables->x, me->variables->y, me->variables->z);	
+	//Draw_Triangle_1(me->variables->x, me->variables->y, me->variables->z);	
 	
 	// Apply transformation after rotation, and the rotation will correct the position
 	glTranslatef(me->variables->x,me->variables->y ,me->variables->z);
