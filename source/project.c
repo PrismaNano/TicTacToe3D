@@ -161,7 +161,7 @@ void PC_Move(){
 				if(Board[PCLayer][X][Y] != BLUE && Board[PCLayer][X][Y] != RED){
 					
 					Board[PCLayer][X][Y] = Color;
-					//DSGM_CreateObjectInstance(DSGM_TOP, Y, X, &DSGM_Objects[Board[PCLayer][X][Y] == RED ? Piece_Red : Piece_Blue]);
+					DSGM_CreateObjectInstance(DSGM_TOP, Y, X, &DSGM_Objects[Board[PCLayer][X][Y] == RED ? Piece_Red : Piece_Blue]);
 					Switch_Turn();
 				}
 			}
@@ -1311,7 +1311,7 @@ void Piece_loop(PieceObjectInstance *me) {
 				// }
 				
 				// Can be simplified to:
-				// result = a == c ? a : b
+				// result = a > b ? a : b
 				DSGM_CreateObjectInstance(DSGM_TOP, me->by, me->bx, &DSGM_Objects[Board[layer][me->bx][me->by] == RED ? Piece_Red : Piece_Blue]);
 				
 				Switch_Turn();
