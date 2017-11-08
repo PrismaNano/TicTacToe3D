@@ -2,9 +2,8 @@
 
 ### Introducing the classic Tic Tac Toe 3D board game for DS!
 
-![](https://raw.githubusercontent.com/PrismaNano/TicTacToe3D/gh-pages/Tic Tac Toe 3D Ad.png)
-![](https://raw.githubusercontent.com/PrismaNano/TicTacToe3D/gh-pages/Screenshot.png)
-
+![](https://github.com/PrismaNano/TicTacToe3D/blob/gh-pages/Tic%20Tac%20Toe%203D%20Ad.png "Optional title")
+![](https://raw.githubusercontent.com/PrismaNano/TicTacToe3D/gh-pages/Screenshot.png "Optional title")
 Building the project
 --------------------
 *  Install devkitARM and libnds from [devkitPro](http://devkitpro.org/)
