@@ -36,147 +36,76 @@ typedef enum {
 
 color Board[3][3][3];
 
-bool Row_Win_BLUE(void) {
+bool RowWinAny(void) {
 	if(
-		(Board[0][0][0] == BLUE &&
-		Board[1][1][1] == BLUE &&
-		Board[2][2][2] == BLUE) ||
+		(Board[0][0][0] == Color &&
+		Board[1][1][1] == Color &&
+		Board[2][2][2] == Color) ||
 		
-		(Board[0][2][2] == BLUE &&
-		Board[1][1][1] == BLUE &&
-		Board[2][0][0] == BLUE) ||
+		(Board[0][2][2] == Color &&
+		Board[1][1][1] == Color &&
+		Board[2][0][0] == Color) ||
 		
-		(Board[0][2][0] == BLUE &&
-		Board[1][1][1] == BLUE &&
-		Board[2][0][2] == BLUE) ||
+		(Board[0][2][0] == Color &&
+		Board[1][1][1] == Color &&
+		Board[2][0][2] == Color) ||
 		
-		(Board[0][0][2] == BLUE &&
-		Board[1][1][1] == BLUE &&
-		Board[2][2][0] == BLUE)
+		(Board[0][0][2] == Color &&
+		Board[1][1][1] == Color &&
+		Board[2][2][0] == Color)
 	) return true;
 	
 	int i, layer;
 	for(i = 0; i < 3; i++) {
 		if(
-			(Board[0][0][i] == BLUE &&
-			Board[1][1][i] == BLUE &&
-			Board[2][2][i] == BLUE) ||
+			(Board[0][0][i] == Color &&
+			Board[1][1][i] == Color &&
+			Board[2][2][i] == Color) ||
 			
-			(Board[0][2][i] == BLUE &&
-			Board[1][1][i] == BLUE &&
-			Board[2][0][i] == BLUE) ||
+			(Board[0][2][i] == Color &&
+			Board[1][1][i] == Color &&
+			Board[2][0][i] == Color) ||
 			
-			(Board[0][i][0] == BLUE &&
-			Board[1][i][1] == BLUE &&
-			Board[2][i][2] == BLUE) ||
+			(Board[0][i][0] == Color &&
+			Board[1][i][1] == Color &&
+			Board[2][i][2] == Color) ||
 			
-			(Board[0][i][2] == BLUE &&
-			Board[1][i][1] == BLUE &&
-			Board[2][i][0] == BLUE)
+			(Board[0][i][2] == Color &&
+			Board[1][i][1] == Color &&
+			Board[2][i][0] == Color)
 		) return true;
 		
 		for(layer = 0; layer < 3; layer++) {
 			if(
-				(Board[layer][0][i] == BLUE &&
-				Board[layer][1][i] == BLUE &&
-				Board[layer][2][i] == BLUE) ||
+				(Board[layer][0][i] == Color &&
+				Board[layer][1][i] == Color &&
+				Board[layer][2][i] == Color) ||
 				
-				(Board[layer][i][0] == BLUE &&
-				Board[layer][i][1] == BLUE &&
-				Board[layer][i][2] == BLUE) ||
+				(Board[layer][i][0] == Color &&
+				Board[layer][i][1] == Color &&
+				Board[layer][i][2] == Color) ||
 				
-				(Board[layer][0][0] == BLUE &&
-				Board[layer][1][1] == BLUE &&
-				Board[layer][2][2] == BLUE) ||
+				(Board[layer][0][0] == Color &&
+				Board[layer][1][1] == Color &&
+				Board[layer][2][2] == Color) ||
 				
-				(Board[layer][2][0] == BLUE &&
-				Board[layer][1][1] == BLUE &&
-				Board[layer][0][2] == BLUE) ||
+				(Board[layer][2][0] == Color &&
+				Board[layer][1][1] == Color &&
+				Board[layer][0][2] == Color) ||
 				
-				(Board[0][i][layer] == BLUE &&
-				Board[1][i][layer] == BLUE &&
-				Board[2][i][layer] == BLUE)
+				(Board[0][i][layer] == Color &&
+				Board[1][i][layer] == Color &&
+				Board[2][i][layer] == Color)
 			
 			) return true;
 		}
 	}
-	
-	return false;
-}
-
-bool Row_Win_RED(void) {
-	if(
-		(Board[0][0][0] == RED &&
-		Board[1][1][1] == RED &&
-		Board[2][2][2] == RED) ||
-		
-		(Board[0][2][2] == RED &&
-		Board[1][1][1] == RED &&
-		Board[2][0][0] == RED) ||
-		
-		(Board[0][2][0] == RED &&
-		Board[1][1][1] == RED &&
-		Board[2][0][2] == RED) ||
-		
-		(Board[0][0][2] == RED &&
-		Board[1][1][1] == RED &&
-		Board[2][2][0] == RED)
-	) return true;
-	
-	int i, layer;
-	for(i = 0; i < 3; i++) {
-		if(
-			(Board[0][0][i] == RED &&
-			Board[1][1][i] == RED &&
-			Board[2][2][i] == RED) ||
-			
-			(Board[0][2][i] == RED &&
-			Board[1][1][i] == RED &&
-			Board[2][0][i] == RED) ||
-			
-			(Board[0][i][0] == RED &&
-			Board[1][i][1] == RED &&
-			Board[2][i][2] == RED) ||
-			
-			(Board[0][i][2] == RED &&
-			Board[1][i][1] == RED &&
-			Board[2][i][0] == RED)
-		) return true;
-		
-		for(layer = 0; layer < 3; layer++) {
-			if(
-				(Board[layer][0][i] == RED &&
-				Board[layer][1][i] == RED &&
-				Board[layer][2][i] == RED) ||
-				
-				(Board[layer][i][0] == RED &&
-				Board[layer][i][1] == RED &&
-				Board[layer][i][2] == RED) ||
-				
-				(Board[layer][0][0] == RED &&
-				Board[layer][1][1] == RED &&
-				Board[layer][2][2] == RED) ||
-				
-				(Board[layer][2][0] == RED &&
-				Board[layer][1][1] == RED &&
-				Board[layer][0][2] == RED) ||
-				
-				(Board[0][i][layer] == RED &&
-				Board[1][i][layer] == RED &&
-				Board[2][i][layer] == RED)
-			
-			) return true;
-		}
-	}
-	
 	return false;
 }
 
 bool GameOver(){
 
-		if(Row_Win_BLUE() || Row_Win_RED()){
-			return true;
-		}
+		if(RowWinAny()) return true;
 		return false;
 }
 
@@ -200,10 +129,9 @@ void Switch_Turn(){
 					}
 					break;
 			}
+			Color++;
+			if(Color>2) Color = 1;
 		}
-		Color++;
-			
-		if(Color>2) Color = 1;
 }
 
 void PC_Move(){
@@ -233,7 +161,7 @@ void PC_Move(){
 				if(Board[PCLayer][X][Y] != BLUE && Board[PCLayer][X][Y] != RED){
 					
 					Board[PCLayer][X][Y] = Color;
-					DSGM_CreateObjectInstance(DSGM_TOP, Y, X, &DSGM_Objects[Board[PCLayer][X][Y] == RED ? Piece_Red : Piece_Blue]);
+					//DSGM_CreateObjectInstance(DSGM_TOP, Y, X, &DSGM_Objects[Board[PCLayer][X][Y] == RED ? Piece_Red : Piece_Blue]);
 					Switch_Turn();
 				}
 			}
@@ -1084,6 +1012,7 @@ void renderer_loop(rendererObjectInstance *me) {
 			}
 		}
 		
+		
 		if(GameOver()){
 			switch(turn){
 				case P2_TURN:
@@ -1110,6 +1039,7 @@ void renderer_loop(rendererObjectInstance *me) {
 					break;
 			}
 		}
+		
 		//Scroll panoramic backgroud
 		scroll = (rotation / 32) % 512;
 		DSGM_ScrollBackground(DSGM_TOP, 2, scroll, 0);
@@ -1372,6 +1302,16 @@ void Piece_loop(PieceObjectInstance *me) {
 			if(!Board[layer][me->bx][me->by]) {
 				Board[layer][me->bx][me->by] = Color;
 				
+				// Ternary operator
+				// int a, b, result
+				// if(a > b) {
+				//    result = b;
+				// } else {
+				//    result = a;
+				// }
+				
+				// Can be simplified to:
+				// result = a == c ? a : b
 				DSGM_CreateObjectInstance(DSGM_TOP, me->by, me->bx, &DSGM_Objects[Board[layer][me->bx][me->by] == RED ? Piece_Red : Piece_Blue]);
 				
 				Switch_Turn();
